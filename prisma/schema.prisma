@@ -8,13 +8,13 @@ datasource db {
 }
 
 model Product {
-  id          String        @id @default(uuid())
-  name        String
-  price       Decimal       @db.Decimal(10, 2)
-  stock       Int
-  createdAt   DateTime      @default(now())
-  updateAt    DateTime      @updatedAt
-  SaleProduct SaleProduct[]
+  id           String        @id @default(uuid())
+  name         String
+  price        Decimal       @db.Decimal(10, 2)
+  stock        Int
+  createdAt    DateTime      @default(now())
+  updateAt     DateTime      @updatedAt
+  saleProducts SaleProduct[]
 }
 
 model Sale {
