@@ -16,11 +16,15 @@ import { PlusIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form'
+import { NumericFormat } from 'react-number-format'
 
 const formSchema = z.object({
   name: z.string().trim().min(1, { message: 'O nome é obrigatório' }),
   price: z.number().min(0.01, { message: 'O valor é obrigatório' }),
-  stock: z.number().min(1, { message: 'A quantidade é obrigatório' })
+  stock: z.coerce
+    .number()
+    .positive({ message: 'A quantidade em estoque deve ser positiva' })
+    .min(1, { message: 'A quantidade é obrigatório' })
 })
 
 type FormSchema = z.infer<typeof formSchema>
@@ -75,7 +79,18 @@ const AddProductButton = () => {
                 <FormItem>
                   <FormLabel>Preço</FormLabel>
                   <FormControl>
-                    <Input placeholder='Digite o preço do produto' {...field} />
+                    <NumericFormat
+                      thousandSeparator='.'
+                      decimalSeparator=','
+                      fixedDecimalScale
+                      decimalScale={2}
+                      prefix='R$'
+                      allowNegative={false}
+                      customInput={Input}
+                      onValueChange={values => field.onChange(values.floatValue)}
+                      {...field}
+                      onChange={() => {}}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -88,7 +103,7 @@ const AddProductButton = () => {
                 <FormItem>
                   <FormLabel>Estoque</FormLabel>
                   <FormControl>
-                    <Input placeholder='Digite o estoque do produto' {...field} />
+                    <Input type='number' placeholder='Digite o estoque do produto' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
