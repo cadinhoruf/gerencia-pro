@@ -12,27 +12,20 @@ import {
 } from '@/app/_components/ui/dialog'
 import { Input } from '@/app/_components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PlusIcon } from 'lucide-react'
+import { CircleIcon, PlusIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form'
 import { NumericFormat } from 'react-number-format'
-
-const formSchema = z.object({
-  name: z.string().trim().min(1, { message: 'O nome é obrigatório' }),
-  price: z.number().min(0.01, { message: 'O valor é obrigatório' }),
-  stock: z.coerce
-    .number()
-    .positive({ message: 'A quantidade em estoque deve ser positiva' })
-    .min(1, { message: 'A quantidade é obrigatório' })
-})
-
-type FormSchema = z.infer<typeof formSchema>
+import { CreateProduct, createProductSchema } from '@/app/_actions/products/create-products/schema'
+import { useState } from 'react'
+import { createProduct } from '@/app/_actions/products/create-products'
+import toast from 'react-hot-toast'
 
 const AddProductButton = () => {
-  const form = useForm<FormSchema>({
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const form = useForm<CreateProduct>({
     shouldUnregister: true,
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(createProductSchema),
     defaultValues: {
       name: '',
       price: 0,
@@ -40,12 +33,19 @@ const AddProductButton = () => {
     }
   })
 
-  const onSubmit = (data: FormSchema) => {
-    console.log(data)
-    return data
+  const onSubmit = async (data: CreateProduct) => {
+    try {
+      setTimeout(() => {}, 5000)
+      await createProduct(data)
+      setModalIsOpen(false)
+      toast.success('Produto criado com sucesso!')
+    } catch (error) {
+      console.error(error)
+      toast.error('Erro ao criar produto')
+    }
   }
   return (
-    <Dialog>
+    <Dialog open={modalIsOpen} onOpenChange={setModalIsOpen}>
       <DialogTrigger asChild>
         <Button className='gap-2'>
           <PlusIcon size={20} />
@@ -115,7 +115,10 @@ const AddProductButton = () => {
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type='submit'>Criar</Button>
+              <Button type='submit' disabled={form.formState.isSubmitting} className='flex gap-1.5'>
+                Criar
+                {form.formState.isSubmitting && <CircleIcon className='mr-2 h-4 w-4 animate-spin' />}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
