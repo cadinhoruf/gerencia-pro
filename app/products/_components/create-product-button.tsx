@@ -16,9 +16,9 @@ import { CircleIcon, PlusIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form'
 import { NumericFormat } from 'react-number-format'
-import { CreateProduct, createProductSchema } from '@/app/_actions/products/create-products/schema'
+import { CreateProduct, createProductSchema } from '@/app/_actions/products/create-product/schema'
 import { useState } from 'react'
-import { createProduct } from '@/app/_actions/products/create-products'
+import { createProduct } from '@/app/_actions/products/create-product'
 import toast from 'react-hot-toast'
 
 const AddProductButton = () => {
