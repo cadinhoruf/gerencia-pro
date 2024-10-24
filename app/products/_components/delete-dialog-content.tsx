@@ -13,7 +13,7 @@ import toast from 'react-hot-toast'
 type DeleteProductDialogContentProps = {
   productId: string
 }
-export const DeleteDialogContentProduct = ({ productId }: DeleteProductDialogContentProps) => {
+const DeleteProductDialogContent = ({ productId }: DeleteProductDialogContentProps) => {
   const handleDeleteProduct = async () => {
     try {
       await deleteProduct({ id: productId })
@@ -38,3 +38,5 @@ export const DeleteDialogContentProduct = ({ productId }: DeleteProductDialogCon
     </AlertDialogContent>
   )
 }
+
+export default DeleteProductDialogContent

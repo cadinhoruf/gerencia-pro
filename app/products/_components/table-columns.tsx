@@ -14,7 +14,7 @@ import { cn } from '@/app/_lib/utils'
 import { Product } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
 import { CircleIcon, ClipboardCopyIcon, EditIcon, MoreHorizontalIcon, TrashIcon } from 'lucide-react'
-import { DeleteDialogContentProduct } from './delete-dialog-content'
+import DeleteProductDialogContent from './delete-dialog-content'
 
 const getStatusLabel = (status: string) => {
   if (status === 'IN_STOCK') {
@@ -85,7 +85,7 @@ export const productTableColumns: ColumnDef<Product>[] = [
               </AlertDialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
-          <DeleteDialogContentProduct productId={product.id} />
+          <DeleteProductDialogContent productId={product.id} />
         </AlertDialog>
       )
     }
