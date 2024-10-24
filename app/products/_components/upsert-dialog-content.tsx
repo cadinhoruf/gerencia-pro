@@ -1,6 +1,6 @@
 'use client'
-import { createProduct } from '@/app/_actions/products/create-product'
-import { CreateProduct, createProductSchema } from '@/app/_actions/products/create-product/schema'
+import { upsertProduct } from '@/app/_actions/products/upsert-product'
+import { UpsertProductSchema, upsertProductSchema } from '@/app/_actions/products/upsert-product/schema'
 import { Button } from '@/app/_components/ui/button'
 import {
   DialogClose,
@@ -20,23 +20,26 @@ import { NumericFormat } from 'react-number-format'
 
 interface UpsertProductDialogContentProps {
   onSuccess?: () => void
+  defaultValues?: UpsertProductSchema
 }
 
-const UpsertProductDialogContent = ({ onSuccess }: UpsertProductDialogContentProps) => {
-  const form = useForm<CreateProduct>({
+const UpsertProductDialogContent = ({ onSuccess, defaultValues }: UpsertProductDialogContentProps) => {
+  const form = useForm<UpsertProductSchema>({
     shouldUnregister: true,
-    resolver: zodResolver(createProductSchema),
-    defaultValues: {
+    resolver: zodResolver(upsertProductSchema),
+    defaultValues: defaultValues ?? {
       name: '',
       price: 0,
       stock: 1
     }
   })
 
-  const onSubmit = async (data: CreateProduct) => {
+  const isEdditing = !!defaultValues
+
+  const onSubmit = async (data: UpsertProductSchema) => {
     try {
       setTimeout(() => {}, 5000)
-      await createProduct(data)
+      await upsertProduct({...data, id: defaultValues?.id ?? ''})
       onSuccess?.()
       toast.success('Produto criado com sucesso!')
     } catch (error) {
@@ -49,7 +52,7 @@ const UpsertProductDialogContent = ({ onSuccess }: UpsertProductDialogContentPro
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           <DialogHeader>
-            <DialogTitle>Criar produto</DialogTitle>
+            <DialogTitle>{isEdditing ? 'Editar' : 'Criar'} produto</DialogTitle>
             <DialogDescription>Insira as informações abaixo</DialogDescription>
           </DialogHeader>
           <FormField
@@ -109,8 +112,8 @@ const UpsertProductDialogContent = ({ onSuccess }: UpsertProductDialogContentPro
               </Button>
             </DialogClose>
             <Button type='submit' disabled={form.formState.isSubmitting} className='flex gap-1.5'>
-              Criar
-              {form.formState.isSubmitting && <CircleIcon className='mr-2 h-4 w-4 animate-spin' />}
+              {isEdditing ? 'Salvar' : 'Criar'}
+              {form.formState.isSubmitting && <CircleIcon className='mr-2 w-4 h-4 animate-spin' />}
             </Button>
           </DialogFooter>
         </form>
