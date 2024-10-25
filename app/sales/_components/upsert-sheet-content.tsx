@@ -1,7 +1,15 @@
 'use client'
 import { Button } from '@/app/_components/ui/button'
 import { Combobox, ComboboxOption } from '@/app/_components/ui/combobox'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/app/_components/ui/form'
 import { Input } from '@/app/_components/ui/input'
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
 import {
@@ -43,6 +51,7 @@ interface SelectedProducts {
 }
 
 const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProps) => {
+  const [actualProduct, setActualProduct] = useState<string>()
   const [selectedProducts, setSelectedProducts] = useState<SelectedProducts[]>([])
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -57,14 +66,23 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
 
     setSelectedProducts(currentProducts => {
       const existingProduct = currentProducts.find(product => product.id === selectedProduct.id)
-
       if (existingProduct) {
+        const isOutOfStock = data.quantity + existingProduct.quantity > selectedProduct.stock
+        if (isOutOfStock) {
+          form.setError('quantity', { message: 'Quantidade indisponível em estoque.' })
+          return currentProducts
+        }
         return currentProducts.map(product => {
           if (product.id === selectedProduct.id) {
             return { ...product, quantity: product.quantity + data.quantity }
           }
           return product
         })
+      }
+      const isOutOfStock = data.quantity > selectedProduct.stock
+      if (isOutOfStock) {
+        form.setError('quantity', { message: 'Quantidade indisponível em estoque.' })
+        return currentProducts
       }
       return [...currentProducts, { ...selectedProduct, quantity: data.quantity, price: Number(selectedProduct.price) }]
     })
@@ -79,6 +97,8 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
   const onDelete = (productId: string) => {
     setSelectedProducts(currentProducts => currentProducts.filter(product => product.id !== productId))
   }
+
+  const productStock = products.find(product => product.id === actualProduct)?.stock
 
   return (
     <SheetContent className='!max-w-[700px]'>
@@ -95,7 +115,12 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
               <FormItem>
                 <FormLabel>Produto</FormLabel>
                 <FormControl>
-                  <Combobox {...field} placeholder='Selecione um produto' options={productOptions} />
+                  <Combobox
+                    {...field}
+                    placeholder='Selecione um produto'
+                    options={productOptions}
+                    setActualProduct={setActualProduct}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -110,6 +135,7 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
                 <FormControl>
                   <Input {...field} type='number' placeholder='Quantidade' className='w-full' min={1} step={1} />
                 </FormControl>
+                <FormDescription className='text-xs'>Quantidade em estoque: {productStock}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

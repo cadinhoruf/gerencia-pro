@@ -7,6 +7,8 @@ import { Button } from './button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command'
 import { Popover, PopoverContent, PopoverTrigger } from './popover'
 import { cn } from '@/app/_lib/utils'
+import { Dispatch, SetStateAction } from 'react'
+import { Product } from '@prisma/client'
 
 export interface ComboboxOption {
   value: string
@@ -18,9 +20,10 @@ interface ComboboxProps {
   value: string
   onChange: (value: string) => void
   placeholder?: string
+  setActualProduct: Dispatch<SetStateAction<string | undefined>>
 }
 
-export const Combobox = ({ value, options, placeholder, onChange }: ComboboxProps) => {
+export const Combobox = ({ value, options, placeholder, onChange, setActualProduct }: ComboboxProps) => {
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -33,9 +36,9 @@ export const Combobox = ({ value, options, placeholder, onChange }: ComboboxProp
       </PopoverTrigger>
       <PopoverContent className='w-[200px] p-0'>
         <Command>
-          <CommandInput placeholder='Search option...' />
+          <CommandInput placeholder='Busque por opções...' />
           <CommandList>
-            <CommandEmpty>No option found.</CommandEmpty>
+            <CommandEmpty>Nenhuma opção encontrada.</CommandEmpty>
             <CommandGroup>
               {options.map(option => (
                 <CommandItem
@@ -44,6 +47,7 @@ export const Combobox = ({ value, options, placeholder, onChange }: ComboboxProp
                   onSelect={currentValue => {
                     onChange(currentValue === value ? '' : currentValue)
                     setOpen(false)
+                    setActualProduct(option.value)
                   }}
                 >
                   <Check className={cn('mr-2 h-4 w-4', value === option.value ? 'opacity-100' : 'opacity-0')} />
