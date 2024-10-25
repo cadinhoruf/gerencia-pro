@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 
 export const upsertProduct = async (data: UpsertProductSchema) => {
   upsertProductSchema.parse(data)
+  console.log(data)
   await db.product.upsert({ where: { id: data.id ?? '' }, update: data, create: data })
   revalidatePath('/products')
 }

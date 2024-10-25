@@ -39,9 +39,9 @@ const UpsertProductDialogContent = ({ onSuccess, defaultValues }: UpsertProductD
   const onSubmit = async (data: UpsertProductSchema) => {
     try {
       setTimeout(() => {}, 5000)
-      await upsertProduct({...data, id: defaultValues?.id ?? ''})
+      await upsertProduct({ ...data, id: defaultValues?.id })
       onSuccess?.()
-      toast.success('Produto criado com sucesso!')
+      toast.success(`Produto ${isEdditing ? 'editado' : 'criado'}  com sucesso!`)
     } catch (error) {
       console.error(error)
       toast.error('Erro ao criar produto')
@@ -113,7 +113,7 @@ const UpsertProductDialogContent = ({ onSuccess, defaultValues }: UpsertProductD
             </DialogClose>
             <Button type='submit' disabled={form.formState.isSubmitting} className='flex gap-1.5'>
               {isEdditing ? 'Salvar' : 'Criar'}
-              {form.formState.isSubmitting && <CircleIcon className='mr-2 w-4 h-4 animate-spin' />}
+              {form.formState.isSubmitting && <CircleIcon className='mr-2 h-4 w-4 animate-spin' />}
             </Button>
           </DialogFooter>
         </form>

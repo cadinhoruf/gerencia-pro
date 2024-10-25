@@ -8,7 +8,7 @@ const ProductsPage = async () => {
   const products = await getProducts()
   return (
     <>
-      <Toaster />
+      <Toaster position='top-right' />
       <div className='m-8 w-full space-y-8 rounded-lg bg-white p-8'>
         <div className='flex w-full items-center justify-between'>
           <div className='space-y-1'>
