@@ -30,6 +30,7 @@ import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import SalesTableDropdownMenu from './table-dropdown-menu'
+import { cn } from '@/app/_lib/utils'
 
 const formSchema = z.object({
   productId: z.string().uuid({ message: 'O produto é obrigatório' }),
@@ -135,7 +136,9 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
                 <FormControl>
                   <Input {...field} type='number' placeholder='Quantidade' className='w-full' min={1} step={1} />
                 </FormControl>
-                <FormDescription className='text-xs'>Quantidade em estoque: {productStock}</FormDescription>
+                {actualProduct && (
+                  <FormDescription className='text-xs'>Quantidade em estoque: {cn(productStock)}</FormDescription>
+                )}
                 <FormMessage />
               </FormItem>
             )}
