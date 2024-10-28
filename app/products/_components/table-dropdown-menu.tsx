@@ -30,7 +30,7 @@ const ProductTableDropdownMenu = ({ product }: ProductTableDropdownMenuProps) =>
               <MoreHorizontalIcon size={16} />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className='flex cursor-pointer flex-col gap-1.5 bg-white shadow-sm'>
+          <DropdownMenuContent className='flex cursor-pointer flex-col gap-1.5 bg-white p-2 shadow-sm'>
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem className='flex gap-1.5'>
@@ -61,7 +61,8 @@ const ProductTableDropdownMenu = ({ product }: ProductTableDropdownMenuProps) =>
             id: product.id,
             name: product.name,
             price: Number(product.price),
-            stock: product.stock
+            stock: product?.stock,
+            cost: Number(product.cost)
           }}
           onSuccess={() => setEditDialogIsOpen(false)}
         />

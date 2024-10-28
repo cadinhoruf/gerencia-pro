@@ -8,11 +8,11 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from './popover'
 import { cn } from '@/app/_lib/utils'
 import { Dispatch, SetStateAction } from 'react'
-import { Product } from '@prisma/client'
 
 export interface ComboboxOption {
   value: string
   label: string
+  cost: number
 }
 
 interface ComboboxProps {
@@ -30,11 +30,15 @@ export const Combobox = ({ value, options, placeholder, onChange, setActualProdu
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant='outline' role='combobox' aria-expanded={open} className='w-full justify-between'>
-          {value ? options.find(option => option.value === value)?.label : placeholder}
+          {value
+            ? options.find(option => option.value === value)?.label +
+              ' - R$' +
+              options.find(option => option.value === value)?.cost
+            : placeholder}
           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-[200px] p-0'>
+      <PopoverContent className='w-[250px] p-0'>
         <Command>
           <CommandInput placeholder='Busque por opções...' />
           <CommandList>
@@ -51,7 +55,7 @@ export const Combobox = ({ value, options, placeholder, onChange, setActualProdu
                   }}
                 >
                   <Check className={cn('mr-2 h-4 w-4', value === option.value ? 'opacity-100' : 'opacity-0')} />
-                  {option.label}
+                  {option.label + ' - R$' + option.cost}
                 </CommandItem>
               ))}
             </CommandGroup>

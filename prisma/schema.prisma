@@ -11,7 +11,8 @@ model Product {
   id           String        @id @default(uuid())
   name         String
   price        Decimal       @db.Decimal(10, 2)
-  stock        Int
+  stock        Int?
+  cost         Int
   createdAt    DateTime      @default(now())
   updateAt     DateTime      @updatedAt
   saleProducts SaleProduct[]
@@ -29,10 +30,22 @@ model SaleProduct {
   id        String   @id @default(uuid())
   saleId    String
   productId String
+  clientId  String
   unitPrice Decimal  @db.Decimal(10, 2)
   quantity  Int
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
   products  Product  @relation(fields: [productId], references: [id])
   sale      Sale     @relation(fields: [saleId], references: [id])
+  client    Client   @relation(fields: [clientId], references: [id])
+}
+
+model Client {
+  id            String        @id @default(uuid())
+  name          String
+  contactName   String
+  contactNumber String
+  createdAt     DateTime      @default(now())
+  updateAt      DateTime      @updatedAt
+  SaleProduct   SaleProduct[]
 }

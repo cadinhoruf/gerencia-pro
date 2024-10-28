@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { LayoutGrid, Package, ShoppingBasket } from 'lucide-react'
+import { Handshake, HandshakeIcon, LayoutGrid, Package, ShoppingBasket } from 'lucide-react'
 import SidebarButton from './sidebar-button'
 
 const Sidebar = () => {
@@ -19,6 +19,10 @@ const Sidebar = () => {
         <SidebarButton href='/sales'>
           <ShoppingBasket size={20} />
           Vendas
+        </SidebarButton>
+        <SidebarButton href='/clients'>
+          <HandshakeIcon size={20} />
+          Clientes
         </SidebarButton>
       </div>
     </div>

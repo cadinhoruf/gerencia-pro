@@ -9,7 +9,8 @@ const SalesPage = async () => {
   const products = await getProducts()
   const productOptions: ComboboxOption[] = products.map(product => ({
     value: product.id,
-    label: product.name
+    label: product.name,
+    cost: product.cost
   }))
   return (
     <>

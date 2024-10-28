@@ -24,7 +24,7 @@ const SalesTableDropdownMenu = ({ product, onDelete }: ProductTableDropdownMenuP
           <MoreHorizontalIcon size={16} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='flex cursor-pointer flex-col gap-1.5 bg-white shadow-sm'>
+      <DropdownMenuContent className='flex cursor-pointer flex-col gap-1.5 space-y-1 bg-white p-2 shadow-md'>
         <DropdownMenuLabel>Ações</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className='flex gap-1.5'>

@@ -12,8 +12,11 @@ import {
 } from '@/app/_components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/app/_components/ui/form'
 import { Input } from '@/app/_components/ui/input'
+import { Label } from '@/app/_components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/app/_components/ui/radio-group'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleIcon } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { NumericFormat } from 'react-number-format'
@@ -24,13 +27,14 @@ interface UpsertProductDialogContentProps {
 }
 
 const UpsertProductDialogContent = ({ onSuccess, defaultValues }: UpsertProductDialogContentProps) => {
+  const [stock, setStock] = useState(false)
   const form = useForm<UpsertProductSchema>({
     shouldUnregister: true,
     resolver: zodResolver(upsertProductSchema),
     defaultValues: defaultValues ?? {
       name: '',
       price: 0,
-      stock: 1
+      cost: 0
     }
   })
 
@@ -70,10 +74,10 @@ const UpsertProductDialogContent = ({ onSuccess, defaultValues }: UpsertProductD
           />
           <FormField
             control={form.control}
-            name='price'
+            name='cost'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Preço</FormLabel>
+                <FormLabel>Custo</FormLabel>
                 <FormControl>
                   <NumericFormat
                     thousandSeparator='.'
@@ -94,17 +98,61 @@ const UpsertProductDialogContent = ({ onSuccess, defaultValues }: UpsertProductD
           />
           <FormField
             control={form.control}
-            name='stock'
+            name='price'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Estoque</FormLabel>
+                <FormLabel>Preço de Venda</FormLabel>
                 <FormControl>
-                  <Input type='number' placeholder='Digite o estoque do produto' {...field} />
+                  <NumericFormat
+                    thousandSeparator='.'
+                    decimalSeparator=','
+                    fixedDecimalScale
+                    decimalScale={2}
+                    prefix='R$'
+                    allowNegative={false}
+                    customInput={Input}
+                    onValueChange={values => field.onChange(values.floatValue)}
+                    {...field}
+                    onChange={() => {}}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <div className='flex flex-col gap-2'>
+            <Label>Possui estoque ?</Label>
+            <RadioGroup>
+              <div className='flex items-center space-x-2'>
+                <RadioGroupItem value='yes' id='yes' onClick={() => setStock(true)} />
+                <Label htmlFor='yes'>Sim</Label>
+              </div>
+              <div className='flex items-center space-x-2'>
+                <RadioGroupItem value='no' id='no' onClick={() => setStock(false)} />
+                <Label htmlFor='no'>Não</Label>
+              </div>
+            </RadioGroup>
+          </div>
+          {stock && (
+            <FormField
+              control={form.control}
+              name='stock'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estoque</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='number'
+                      placeholder='Digite o estoque do produto'
+                      {...field}
+                      value={field.value != null ? field.value : ''}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <DialogFooter>
             <DialogClose asChild>
               <Button variant='secondary' type='reset'>

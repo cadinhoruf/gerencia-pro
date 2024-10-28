@@ -11,7 +11,7 @@ import {
   FormMessage
 } from '@/app/_components/ui/form'
 import { Input } from '@/app/_components/ui/input'
-import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
+import { SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
 import {
   Table,
   TableBody,
@@ -25,7 +25,7 @@ import {
 import { formatCurrency } from '@/app/_helpers/currency'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Product } from '@prisma/client'
-import { PlusIcon } from 'lucide-react'
+import { CheckIcon, PlusIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -48,6 +48,7 @@ interface SelectedProducts {
   id: string
   name: string
   price: number
+  cost: number
   quantity: number
 }
 
@@ -68,25 +69,43 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
     setSelectedProducts(currentProducts => {
       const existingProduct = currentProducts.find(product => product.id === selectedProduct.id)
       if (existingProduct) {
-        const isOutOfStock = data.quantity + existingProduct.quantity > selectedProduct.stock
-        if (isOutOfStock) {
-          form.setError('quantity', { message: 'Quantidade indisponível em estoque.' })
-          return currentProducts
-        }
-        return currentProducts.map(product => {
-          if (product.id === selectedProduct.id) {
-            return { ...product, quantity: product.quantity + data.quantity }
+        const productStock = typeof selectedProduct.stock === 'number'
+        if (productStock) {
+          const isOutOfStock = data.quantity > selectedProduct.stock!
+          if (isOutOfStock) {
+            form.setError('quantity', { message: 'Quantidade indisponível em estoque.' })
+            return currentProducts
           }
-          return product
-        })
+          return currentProducts.map(product => {
+            if (product.id === selectedProduct.id) {
+              return { ...product, quantity: product.quantity + data.quantity }
+            }
+            return product
+          })
+        } else {
+          return currentProducts.map(product => {
+            if (product.id === selectedProduct.id) {
+              return { ...product, quantity: product.quantity + data.quantity }
+            }
+            return product
+          })
+        }
+      } else {
+        const productStock = typeof selectedProduct.stock === 'number'
+        if (productStock) {
+          const isOutOfStock = selectedProduct.stock !== 0 ? data.quantity > selectedProduct.stock! : 0
+          if (isOutOfStock) {
+            form.setError('quantity', { message: 'Quantidade indisponível em estoque.' })
+            return currentProducts
+          }
+        }
+        return [
+          ...currentProducts,
+          { ...selectedProduct, quantity: data.quantity, price: Number(selectedProduct.price) }
+        ]
       }
-      const isOutOfStock = data.quantity > selectedProduct.stock
-      if (isOutOfStock) {
-        form.setError('quantity', { message: 'Quantidade indisponível em estoque.' })
-        return currentProducts
-      }
-      return [...currentProducts, { ...selectedProduct, quantity: data.quantity, price: Number(selectedProduct.price) }]
     })
+    form.reset()
   }
 
   const productsTotal = useMemo(() => {
@@ -102,7 +121,7 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
   const productStock = products.find(product => product.id === actualProduct)?.stock
 
   return (
-    <SheetContent className='!max-w-[700px]'>
+    <SheetContent className='!max-w-[700px] overflow-y-auto'>
       <SheetHeader>
         <SheetTitle>Nova venda</SheetTitle>
         <SheetDescription>Insira as informações da venda abaixo</SheetDescription>
@@ -136,7 +155,7 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
                 <FormControl>
                   <Input {...field} type='number' placeholder='Quantidade' className='w-full' min={1} step={1} />
                 </FormControl>
-                {actualProduct && (
+                {actualProduct && productStock && (
                   <FormDescription className='text-xs'>Quantidade em estoque: {cn(productStock)}</FormDescription>
                 )}
                 <FormMessage />
@@ -156,7 +175,8 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
         <TableHeader>
           <TableRow>
             <TableHead>Produto</TableHead>
-            <TableHead>Preço Unitário</TableHead>
+            <TableHead>Custo Unitário</TableHead>
+            <TableHead>Valor Unitário</TableHead>
             <TableHead>Quantidade</TableHead>
             <TableHead>Total</TableHead>
             <TableHead>Ações</TableHead>
@@ -166,6 +186,7 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
           {selectedProducts.map(product => (
             <TableRow key={product.id}>
               <TableCell>{product.name}</TableCell>
+              <TableCell>{formatCurrency(product.cost)}</TableCell>
               <TableCell>{formatCurrency(product.price)}</TableCell>
               <TableCell>{product.quantity}</TableCell>
               <TableCell> {formatCurrency(product.price * product.quantity)}</TableCell>
@@ -176,11 +197,19 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
         <TableFooter>
           <TableRow>
             <TableCell colSpan={3}>Total</TableCell>
+            <TableCell></TableCell>
             <TableCell>{formatCurrency(productsTotal)}</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableFooter>
       </Table>
+
+      <SheetFooter className='pt-6'>
+        <Button type='submit' className='w-full gap-2' variant='default' disabled={selectedProducts.length === 0}>
+          <CheckIcon size={20} />
+          Finalizar venda
+        </Button>
+      </SheetFooter>
     </SheetContent>
   )
 }
