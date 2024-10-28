@@ -1,6 +1,6 @@
 'use client'
+import { upsertClient } from '@/app/_actions/client/upsert-client'
 import { UpsertClientSchema, upsertClientSchema } from '@/app/_actions/client/upsert-client/schema'
-import { upsertProduct } from '@/app/_actions/products/upsert-product'
 import { Button } from '@/app/_components/ui/button'
 import {
   DialogClose,
@@ -14,7 +14,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/app/_components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleIcon } from 'lucide-react'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { withMask } from 'use-mask-input'
@@ -25,7 +24,6 @@ interface UpsertClientDialogContentProps {
 }
 
 const UpsertClientDialogContent = ({ onSuccess, defaultValues }: UpsertClientDialogContentProps) => {
-  const [stock, setStock] = useState(false)
   const form = useForm<UpsertClientSchema>({
     shouldUnregister: true,
     resolver: zodResolver(upsertClientSchema),
@@ -40,7 +38,7 @@ const UpsertClientDialogContent = ({ onSuccess, defaultValues }: UpsertClientDia
 
   const onSubmit = async (data: UpsertClientSchema) => {
     try {
-      setTimeout(() => {}, 5000)
+      await upsertClient({ ...data, id: defaultValues?.id })
       onSuccess?.()
       toast.success(`Cliente ${isEdditing ? 'editado' : 'criado'}  com sucesso!`)
     } catch (error) {
@@ -53,7 +51,7 @@ const UpsertClientDialogContent = ({ onSuccess, defaultValues }: UpsertClientDia
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           <DialogHeader>
-            <DialogTitle>{isEdditing ? 'Editar' : 'Criar'} produto</DialogTitle>
+            <DialogTitle>{isEdditing ? 'Editar' : 'Criar'} cliente</DialogTitle>
             <DialogDescription>Insira as informações abaixo</DialogDescription>
           </DialogHeader>
           <FormField

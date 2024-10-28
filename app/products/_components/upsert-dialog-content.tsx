@@ -42,7 +42,6 @@ const UpsertProductDialogContent = ({ onSuccess, defaultValues }: UpsertProductD
 
   const onSubmit = async (data: UpsertProductSchema) => {
     try {
-      setTimeout(() => {}, 5000)
       await upsertProduct({ ...data, id: defaultValues?.id })
       onSuccess?.()
       toast.success(`Produto ${isEdditing ? 'editado' : 'criado'}  com sucesso!`)

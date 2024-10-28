@@ -4,6 +4,8 @@ import { Sheet, SheetTrigger } from '../_components/ui/sheet'
 import UpsertSheetContent from './_components/upsert-sheet-content'
 import { getProducts } from '../_data-access/product/get-product'
 import { ComboboxOption } from '../_components/ui/combobox'
+import { getClients } from '../_data-access/clients/get-client'
+import CreateSaleButton from './_components/create-sale-button'
 
 const SalesPage = async () => {
   const products = await getProducts()
@@ -11,6 +13,11 @@ const SalesPage = async () => {
     value: product.id,
     label: product.name,
     cost: product.cost
+  }))
+  const clients = await getClients()
+  const clientOptions: ComboboxOption[] = clients.map(client => ({
+    value: client.id,
+    label: client.name
   }))
   return (
     <>
@@ -21,12 +28,7 @@ const SalesPage = async () => {
             <span className='text-xs font-semibold text-slate-500'>Gestão de Vendas</span>
             <h2 className='text-xl font-semibold'>Vendas</h2>
           </div>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button>Nova venda</Button>
-            </SheetTrigger>
-            <UpsertSheetContent products={JSON.parse(JSON.stringify(products))} productOptions={productOptions} />
-          </Sheet>
+          <CreateSaleButton clientOptions={clientOptions} productOptions={productOptions} products={products} />
         </div>
         {/* <DataTable columns={productTableColumns} data={JSON.parse(JSON.stringify(products))} /> */}
       </div>

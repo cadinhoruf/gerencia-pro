@@ -31,10 +31,15 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import SalesTableDropdownMenu from './table-dropdown-menu'
 import { cn } from '@/app/_lib/utils'
+import { ComboboxValue } from '@/app/_components/ui/combobox-value'
+import { createSale } from '@/app/_actions/sale/create-sale'
+import toast from 'react-hot-toast'
+import { on } from 'events'
 
 const formSchema = z.object({
   productId: z.string().uuid({ message: 'O produto é obrigatório' }),
-  quantity: z.coerce.number({ message: 'A quantidade é obrigatoria' }).int().positive()
+  quantity: z.coerce.number({ message: 'A quantidade é obrigatoria' }).int().positive(),
+  clientId: z.string().uuid({ message: 'O cliente é obrigatório' })
 })
 
 type FormSchema = z.infer<typeof formSchema>
@@ -42,6 +47,8 @@ type FormSchema = z.infer<typeof formSchema>
 interface UpsertSheetContentProps {
   products: Product[]
   productOptions: ComboboxOption[]
+  clientOptions: ComboboxOption[]
+  onSubmitSuccess: () => void
 }
 
 interface SelectedProducts {
@@ -52,14 +59,15 @@ interface SelectedProducts {
   quantity: number
 }
 
-const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProps) => {
+const UpsertSheetContent = ({ productOptions, products, clientOptions, onSubmitSuccess }: UpsertSheetContentProps) => {
   const [actualProduct, setActualProduct] = useState<string>()
   const [selectedProducts, setSelectedProducts] = useState<SelectedProducts[]>([])
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       productId: '',
-      quantity: 1
+      quantity: 1,
+      clientId: ''
     }
   })
   const onSubmit = async (data: FormSchema) => {
@@ -105,7 +113,11 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
         ]
       }
     })
-    form.reset()
+    form.reset({
+      ...form.getValues(),
+      productId: '',
+      quantity: 1
+    })
   }
 
   const productsTotal = useMemo(() => {
@@ -120,6 +132,21 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
 
   const productStock = products.find(product => product.id === actualProduct)?.stock
 
+  const onSubmitSale = async () => {
+    try {
+      await createSale({
+        products: selectedProducts.map(product => ({ id: product.id, quantity: product.quantity })),
+        clientId: form.getValues('clientId')
+      })
+      toast.success('Venda criada com sucesso!')
+      setSelectedProducts([])
+      onSubmitSuccess()
+    } catch (error) {
+      console.error(error)
+      toast.error('Erro ao criar venda.')
+    }
+  }
+
   return (
     <SheetContent className='!max-w-[700px] overflow-y-auto'>
       <SheetHeader>
@@ -130,12 +157,25 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
         <form className='space-y-6 py-6' onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
+            name='clientId'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cliente</FormLabel>
+                <FormControl>
+                  <Combobox {...field} placeholder='Selecione um cliente' options={clientOptions} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name='productId'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Produto</FormLabel>
                 <FormControl>
-                  <Combobox
+                  <ComboboxValue
                     {...field}
                     placeholder='Selecione um produto'
                     options={productOptions}
@@ -205,7 +245,13 @@ const UpsertSheetContent = ({ productOptions, products }: UpsertSheetContentProp
       </Table>
 
       <SheetFooter className='pt-6'>
-        <Button type='submit' className='w-full gap-2' variant='default' disabled={selectedProducts.length === 0}>
+        <Button
+          type='submit'
+          className='w-full gap-2'
+          variant='default'
+          disabled={selectedProducts.length === 0}
+          onClick={onSubmitSale}
+        >
           <CheckIcon size={20} />
           Finalizar venda
         </Button>
