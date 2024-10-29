@@ -5,7 +5,7 @@ import { Product } from '@prisma/client'
 import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import SalesTableDropdownMenu from './table-dropdown-menu'
+import UpserSaleTableDropdownMenu from './upsert-table-dropdown-menu'
 import { createSale } from '@/app/_actions/sale/create-sale'
 import toast from 'react-hot-toast'
 import { useAction } from 'next-safe-action/hooks'
@@ -205,7 +205,7 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertS
             )}
           />
 
-          <Button type='submit' className='gap-2 w-full' variant='secondary'>
+          <Button type='submit' className='w-full gap-2' variant='secondary'>
             <PlusIcon size={20} />
             Adicionar produto a venda
           </Button>
@@ -232,7 +232,7 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertS
               <TableCell>{formatCurrency(product.price)}</TableCell>
               <TableCell>{product.quantity}</TableCell>
               <TableCell> {formatCurrency(product.price * product.quantity)}</TableCell>
-              <SalesTableDropdownMenu product={product} onDelete={onDelete} />
+              <UpserSaleTableDropdownMenu product={product} onDelete={onDelete} />
             </TableRow>
           ))}
         </TableBody>
@@ -249,7 +249,7 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertS
       <SheetFooter className='pt-6'>
         <Button
           type='submit'
-          className='gap-2 w-full'
+          className='w-full gap-2'
           variant='default'
           disabled={selectedProducts.length === 0}
           onClick={onSubmitSale}

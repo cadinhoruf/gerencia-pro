@@ -1,5 +1,6 @@
 'use client'
 import { SalesDto } from '@/app/_data-access/sale/get-sales'
+import { formatCurrency } from '@/app/_helpers/currency'
 import { ColumnDef } from '@tanstack/react-table'
 
 export const saleTableColums: ColumnDef<SalesDto>[] = [
@@ -13,7 +14,10 @@ export const saleTableColums: ColumnDef<SalesDto>[] = [
   },
   {
     accessorKey: 'totalAmount',
-    header: 'Valor Total'
+    header: 'Valor Total',
+    cell: ({ row: { original } }) => {
+      return formatCurrency(original.totalAmount)
+    }
   },
   {
     accessorKey: 'date',
