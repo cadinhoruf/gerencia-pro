@@ -34,7 +34,6 @@ import { cn } from '@/app/_lib/utils'
 import { ComboboxValue } from '@/app/_components/ui/combobox-value'
 import { createSale } from '@/app/_actions/sale/create-sale'
 import toast from 'react-hot-toast'
-import { on } from 'events'
 
 const formSchema = z.object({
   productId: z.string().uuid({ message: 'O produto é obrigatório' }),

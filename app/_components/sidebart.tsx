@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Handshake, HandshakeIcon, LayoutGrid, Package, ShoppingBasket } from 'lucide-react'
+import { HandshakeIcon, LayoutGrid, Package, ShoppingBasket } from 'lucide-react'
 import SidebarButton from './sidebar-button'
 
 const Sidebar = () => {
