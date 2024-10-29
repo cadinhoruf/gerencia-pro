@@ -1,17 +1,14 @@
 'use client'
-import { Button } from '@/app/_components/ui/button'
 import { Combobox, ComboboxOption } from '@/app/_components/ui/combobox'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/app/_components/ui/form'
-import { Input } from '@/app/_components/ui/input'
-import { SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/app/_components/ui/sheet'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Product } from '@prisma/client'
+import { useMemo, useState } from 'react'
+import { Form, useForm } from 'react-hook-form'
+import { z } from 'zod'
+import SalesTableDropdownMenu from './table-dropdown-menu'
+import { createSale } from '@/app/_actions/sale/create-sale'
+import toast from 'react-hot-toast'
+import { useAction } from 'next-safe-action/hooks'
 import {
   Table,
   TableBody,
@@ -22,18 +19,15 @@ import {
   TableHeader,
   TableRow
 } from '@/app/_components/ui/table'
-import { formatCurrency } from '@/app/_helpers/currency'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Product } from '@prisma/client'
-import { CheckIcon, PlusIcon } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import SalesTableDropdownMenu from './table-dropdown-menu'
-import { cn } from '@/app/_lib/utils'
+import { Button } from '@/app/_components/ui/button'
 import { ComboboxValue } from '@/app/_components/ui/combobox-value'
-import { createSale } from '@/app/_actions/sale/create-sale'
-import toast from 'react-hot-toast'
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/app/_components/ui/form'
+import { SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/app/_components/ui/sheet'
+import { formatCurrency } from '@/app/_helpers/currency'
+import { cn } from '@/app/_lib/utils'
+import { PlusIcon, CheckIcon } from 'lucide-react'
+import { Input } from '@/app/_components/ui/input'
+import { flattenValidationErrors } from 'next-safe-action'
 
 const formSchema = z.object({
   productId: z.string().uuid({ message: 'O produto é obrigatório' }),
@@ -58,9 +52,15 @@ interface SelectedProducts {
   quantity: number
 }
 
-const UpsertSheetContent = ({ productOptions, products, clientOptions, onSubmitSuccess }: UpsertSheetContentProps) => {
+const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertSheetContentProps) => {
   const [actualProduct, setActualProduct] = useState<string>()
   const [selectedProducts, setSelectedProducts] = useState<SelectedProducts[]>([])
+  const { execute: executeCreateSale } = useAction(createSale, {
+    onError: ({ error: { validationErrors, serverError } }) => {
+      const flattenedErrors = flattenValidationErrors(validationErrors)
+      toast.error(serverError ?? flattenedErrors.formErrors[0])
+    }
+  })
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -132,18 +132,13 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions, onSubmitS
   const productStock = products.find(product => product.id === actualProduct)?.stock
 
   const onSubmitSale = async () => {
-    try {
-      await createSale({
-        products: selectedProducts.map(product => ({ id: product.id, quantity: product.quantity })),
-        clientId: form.getValues('clientId')
-      })
-      toast.success('Venda criada com sucesso!')
-      setSelectedProducts([])
-      onSubmitSuccess()
-    } catch (error) {
-      console.error(error)
-      toast.error('Erro ao criar venda.')
-    }
+    executeCreateSale({
+      products: selectedProducts.map(product => ({
+        id: product.id,
+        quantity: product.quantity
+      })),
+      clientId: form.getValues('clientId')
+    })
   }
 
   return (
