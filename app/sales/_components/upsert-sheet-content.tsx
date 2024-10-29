@@ -2,8 +2,8 @@
 import { Combobox, ComboboxOption } from '@/app/_components/ui/combobox'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Product } from '@prisma/client'
-import { useMemo, useState } from 'react'
-import { Form, useForm } from 'react-hook-form'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import SalesTableDropdownMenu from './table-dropdown-menu'
 import { createSale } from '@/app/_actions/sale/create-sale'
@@ -21,7 +21,15 @@ import {
 } from '@/app/_components/ui/table'
 import { Button } from '@/app/_components/ui/button'
 import { ComboboxValue } from '@/app/_components/ui/combobox-value'
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/app/_components/ui/form'
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  FormDescription,
+  Form
+} from '@/app/_components/ui/form'
 import { SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/app/_components/ui/sheet'
 import { formatCurrency } from '@/app/_helpers/currency'
 import { cn } from '@/app/_lib/utils'
@@ -41,7 +49,7 @@ interface UpsertSheetContentProps {
   products: Product[]
   productOptions: ComboboxOption[]
   clientOptions: ComboboxOption[]
-  onSubmitSuccess: () => void
+  setSheetIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
 interface SelectedProducts {
@@ -197,7 +205,7 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertS
             )}
           />
 
-          <Button type='submit' className='w-full gap-2' variant='secondary'>
+          <Button type='submit' className='gap-2 w-full' variant='secondary'>
             <PlusIcon size={20} />
             Adicionar produto a venda
           </Button>
@@ -241,7 +249,7 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertS
       <SheetFooter className='pt-6'>
         <Button
           type='submit'
-          className='w-full gap-2'
+          className='gap-2 w-full'
           variant='default'
           disabled={selectedProducts.length === 0}
           onClick={onSubmitSale}

@@ -9,20 +9,21 @@ import {
   AlertDialogTitle
 } from '../../_components/ui/alert-dialog'
 import toast from 'react-hot-toast'
+import { useAction } from 'next-safe-action/hooks'
 
 type DeleteProductDialogContentProps = {
   productId: string
 }
 const DeleteProductDialogContent = ({ productId }: DeleteProductDialogContentProps) => {
-  const handleDeleteProduct = async () => {
-    try {
-      await deleteProduct({ id: productId })
-      toast.success('Produto excluído com sucesso!')
-    } catch (error) {
-      console.error(error)
-      toast.error('Erro ao excluir o produto')
+  const { execute: executeDeleteProduct } = useAction(deleteProduct, {
+    onError: () => {
+      toast.error('Erro ao deletar o produto.')
+    },
+    onSuccess: () => {
+      toast.success('Produto deletado com sucesso')
     }
-  }
+  })
+  const handleDeleteProduct = () => executeDeleteProduct({ id: productId })
   return (
     <AlertDialogContent>
       <AlertDialogHeader>

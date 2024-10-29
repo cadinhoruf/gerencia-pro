@@ -25,9 +25,12 @@ const SalesPage = async () => {
             <span className='text-xs font-semibold text-slate-500'>Gestão de Vendas</span>
             <h2 className='text-xl font-semibold'>Vendas</h2>
           </div>
-          <CreateSaleButton clientOptions={clientOptions} productOptions={productOptions} products={products} />
+          <CreateSaleButton
+            clientOptions={clientOptions}
+            productOptions={productOptions}
+            products={JSON.parse(JSON.stringify(products))}
+          />
         </div>
-        {/* <DataTable columns={productTableColumns} data={JSON.parse(JSON.stringify(products))} /> */}
       </div>
     </>
   )
