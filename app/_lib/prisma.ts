@@ -13,7 +13,7 @@ const createPrismaClient = () => {
         status: {
           needs: { stock: true },
           compute(product) {
-            if (product.stock <= 0) {
+            if (product.stock !== null && product.stock <= 0) {
               return 'OUT_OF_STOCK'
             }
             return 'IN_STOCK'
