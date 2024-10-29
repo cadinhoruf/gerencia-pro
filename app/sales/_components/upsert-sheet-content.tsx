@@ -93,7 +93,7 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions, onSubmitS
         } else {
           return currentProducts.map(product => {
             if (product.id === selectedProduct.id) {
-              return { ...product, quantity: product.quantity + data.quantity }
+              return { ...product, quantity: product.quantity + data.quantity, cost: product.cost }
             }
             return product
           })
