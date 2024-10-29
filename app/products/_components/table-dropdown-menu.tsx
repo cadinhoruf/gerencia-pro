@@ -13,10 +13,10 @@ import { MoreHorizontalIcon, ClipboardCopyIcon, EditIcon, TrashIcon } from 'luci
 import DeleteProductDialogContent from './delete-dialog-content'
 import UpsertProductDialogContent from './upsert-dialog-content'
 import { useState } from 'react'
-import { Product } from '@prisma/client'
+import { ProductDto } from '@/app/_data-access/product/get-product'
 
 interface ProductTableDropdownMenuProps {
-  product: Product
+  product: ProductDto
 }
 
 const ProductTableDropdownMenu = ({ product }: ProductTableDropdownMenuProps) => {

@@ -1,6 +1,6 @@
 'use server'
 import { db } from '@/app/_lib/prisma'
-import { createSaleSchema, CreateSaleSchema } from './schema'
+import { createSaleSchema } from './schema'
 import { revalidatePath } from 'next/cache'
 import { actionClient } from '@/app/_lib/safe-action'
 import { returnValidationErrors } from 'next-safe-action'

@@ -1,9 +1,11 @@
 'use client'
-import { Product } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
 import ProductTableDropdownMenu from './table-dropdown-menu'
+import { ProductDto } from '@/app/_data-access/product/get-product'
+import { formatCurrency } from '@/app/_helpers/currency'
+import ProductStatusBadge from '@/app/_components/product-status-badge'
 
-export const productTableColumns: ColumnDef<Product>[] = [
+export const productTableColumns: ColumnDef<ProductDto>[] = [
   {
     accessorKey: 'name',
     header: 'Produto'
@@ -13,21 +15,35 @@ export const productTableColumns: ColumnDef<Product>[] = [
     header: 'Custo unitário',
     cell: row => {
       const product = row.row.original
-      return Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(product.cost))
+      return formatCurrency(product.cost)
     }
   },
   {
     accessorKey: 'price',
     header: 'Valor unitário',
-    cell: row => {
-      const product = row.row.original
-      return Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(product.price))
+    cell: ({ row: { original } }) => {
+      const product = original
+      return formatCurrency(Number(product.price))
     }
   },
-
   {
-    header: 'Ações',
+    accessorKey: 'stock',
+    header: 'Estoque',
+    cell: ({ row: { original } }) => {
+      const product = original
+      return product?.stock !== null ? product.stock : 'Produto externo'
+    }
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row: { original: product } }) => {
+      return <ProductStatusBadge status={product.status} />
+    }
+  },
+  {
     accessorKey: 'actions',
+    header: 'Ações',
     cell: row => {
       const product = row.row.original
       return <ProductTableDropdownMenu product={product} />
