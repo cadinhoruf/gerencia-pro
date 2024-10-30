@@ -9,16 +9,6 @@ import UpserSaleTableDropdownMenu from './upsert-table-dropdown-menu'
 import { createSale } from '@/app/_actions/sale/create-sale'
 import toast from 'react-hot-toast'
 import { useAction } from 'next-safe-action/hooks'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/app/_components/ui/table'
 import { Button } from '@/app/_components/ui/button'
 import { ComboboxValue } from '@/app/_components/ui/combobox-value'
 import {
@@ -36,6 +26,7 @@ import { cn } from '@/app/_lib/utils'
 import { PlusIcon, CheckIcon } from 'lucide-react'
 import { Input } from '@/app/_components/ui/input'
 import { flattenValidationErrors } from 'next-safe-action'
+import SaleUpsertSheetTable from './upsert-sheet-table'
 
 const formSchema = z.object({
   productId: z.string().uuid({ message: 'O produto é obrigatório' }),
@@ -52,7 +43,7 @@ interface UpsertSheetContentProps {
   setSheetIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
-interface SelectedProducts {
+export interface SelectedProducts {
   id: string
   name: string
   price: number
@@ -125,16 +116,6 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertS
       productId: '',
       quantity: 1
     })
-  }
-
-  const productsTotal = useMemo(() => {
-    return selectedProducts.reduce((total, product) => {
-      return total + product.price * product.quantity
-    }, 0)
-  }, [selectedProducts])
-
-  const onDelete = (productId: string) => {
-    setSelectedProducts(currentProducts => currentProducts.filter(product => product.id !== productId))
   }
 
   const productStock = products.find(product => product.id === actualProduct)?.stock
@@ -211,41 +192,7 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertS
           </Button>
         </form>
       </Form>
-
-      <Table>
-        <TableCaption>Lista dos produtos adicionados à venda</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Produto</TableHead>
-            <TableHead>Custo Unitário</TableHead>
-            <TableHead>Valor Unitário</TableHead>
-            <TableHead>Quantidade</TableHead>
-            <TableHead>Total</TableHead>
-            <TableHead>Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {selectedProducts.map(product => (
-            <TableRow key={product.id}>
-              <TableCell>{product.name}</TableCell>
-              <TableCell>{formatCurrency(product.cost)}</TableCell>
-              <TableCell>{formatCurrency(product.price)}</TableCell>
-              <TableCell>{product.quantity}</TableCell>
-              <TableCell> {formatCurrency(product.price * product.quantity)}</TableCell>
-              <UpserSaleTableDropdownMenu product={product} onDelete={onDelete} />
-            </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell></TableCell>
-            <TableCell>{formatCurrency(productsTotal)}</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-
+      <SaleUpsertSheetTable selectedProducts={selectedProducts} setSelectedProducts={setSelectedProducts} />
       <SheetFooter className='pt-6'>
         <Button
           type='submit'
