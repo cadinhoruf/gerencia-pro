@@ -30,7 +30,8 @@ const UpsertClientDialogContent = ({ onSuccess, defaultValues }: UpsertClientDia
     defaultValues: defaultValues ?? {
       name: '',
       contactName: '',
-      contactNumber: ''
+      contactNumber: '',
+      address: ''
     }
   })
 
@@ -93,6 +94,47 @@ const UpsertClientDialogContent = ({ onSuccess, defaultValues }: UpsertClientDia
                     type='tel'
                     ref={withMask('(99) 99999-9999')}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='cpf'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>CPF</FormLabel>
+                <FormControl>
+                  <Input placeholder='Digite o cpf da pessoa de contato' {...field} ref={withMask('999.999.999-99')} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='cnpj'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>CNPJ</FormLabel>
+                <FormControl>
+                  <Input placeholder='Digite o cnpj da empresa' {...field} ref={withMask('99.999.999/9999-99')} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='address'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Endereço</FormLabel>
+                <FormControl>
+                  <Input placeholder='Digite o endereço da empresa' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

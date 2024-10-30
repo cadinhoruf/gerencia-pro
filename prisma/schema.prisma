@@ -35,9 +35,9 @@ model SaleProduct {
   quantity  Int
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
-  products  Product  @relation(fields: [productId], references: [id])
-  sale      Sale     @relation(fields: [saleId], references: [id])
-  client    Client   @relation(fields: [clientId], references: [id])
+  products  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sale      Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 
 model Client {
@@ -47,5 +47,8 @@ model Client {
   contactNumber String
   createdAt     DateTime      @default(now())
   updateAt      DateTime      @updatedAt
+  cnpj          String?
+  cpf           String?
+  address       String
   SaleProduct   SaleProduct[]
 }

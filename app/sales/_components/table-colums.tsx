@@ -28,6 +28,11 @@ export const saleTableColums: ColumnDef<SalesDto>[] = [
     }
   },
   {
+    accessorKey: 'clientId',
+    header: 'Cliente',
+    cell: ({ row: { original } }) => {}
+  },
+  {
     accessorKey: 'actions',
     header: 'Ações',
     cell: ({ row: { original: sale } }) => {

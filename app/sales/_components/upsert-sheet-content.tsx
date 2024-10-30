@@ -2,11 +2,9 @@
 import { Combobox, ComboboxOption } from '@/app/_components/ui/combobox'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Product } from '@prisma/client'
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import UpserSaleTableDropdownMenu from './upsert-table-dropdown-menu'
-import { createSale } from '@/app/_actions/sale/create-sale'
 import toast from 'react-hot-toast'
 import { useAction } from 'next-safe-action/hooks'
 import { Button } from '@/app/_components/ui/button'
@@ -21,12 +19,12 @@ import {
   Form
 } from '@/app/_components/ui/form'
 import { SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/app/_components/ui/sheet'
-import { formatCurrency } from '@/app/_helpers/currency'
 import { cn } from '@/app/_lib/utils'
 import { PlusIcon, CheckIcon } from 'lucide-react'
 import { Input } from '@/app/_components/ui/input'
 import { flattenValidationErrors } from 'next-safe-action'
 import SaleUpsertSheetTable from './upsert-sheet-table'
+import { upsertSale } from '@/app/_actions/sale/upsert-sale'
 
 const formSchema = z.object({
   productId: z.string().uuid({ message: 'O produto é obrigatório' }),
@@ -36,6 +34,14 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>
 
+export interface SelectedProducts {
+  id: string
+  name: string
+  price: number
+  cost: number
+  quantity: number
+}
+
 interface UpsertSheetContentProps {
   isOpen: boolean
   saleId?: string
@@ -44,14 +50,6 @@ interface UpsertSheetContentProps {
   clientOptions: ComboboxOption[]
   setSheetIsOpen: Dispatch<SetStateAction<boolean>>
   defaultSelectedProducts?: SelectedProducts[]
-}
-
-export interface SelectedProducts {
-  id: string
-  name: string
-  price: number
-  cost: number
-  quantity: number
 }
 
 const UpsertSheetContent = ({
@@ -64,7 +62,7 @@ const UpsertSheetContent = ({
 }: UpsertSheetContentProps) => {
   const [actualProduct, setActualProduct] = useState<string>()
   const [selectedProducts, setSelectedProducts] = useState<SelectedProducts[]>(defaultSelectedProducts ?? [])
-  const { execute: executeCreateSale } = useAction(createSale, {
+  const { execute: executeCreateSale } = useAction(upsertSale, {
     onError: ({ error: { validationErrors, serverError } }) => {
       const flattenedErrors = flattenValidationErrors(validationErrors)
       toast.error(serverError ?? flattenedErrors.formErrors[0])
