@@ -20,7 +20,7 @@ import {
 } from '@/app/_components/ui/form'
 import { SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/app/_components/ui/sheet'
 import { cn } from '@/app/_lib/utils'
-import { PlusIcon, CheckIcon } from 'lucide-react'
+import { PlusIcon, CheckIcon, LoaderCircleIcon } from 'lucide-react'
 import { Input } from '@/app/_components/ui/input'
 import { flattenValidationErrors } from 'next-safe-action'
 import SaleUpsertSheetTable from './upsert-sheet-table'
@@ -224,7 +224,11 @@ const UpsertSheetContent = ({
           disabled={selectedProducts.length === 0}
           onClick={onSubmitSale}
         >
-          <CheckIcon size={20} />
+          {form.formState.isSubmitting ? (
+            <LoaderCircleIcon size={20} className='animate-spin' />
+          ) : (
+            <CheckIcon size={20} />
+          )}
           Finalizar venda
         </Button>
       </SheetFooter>

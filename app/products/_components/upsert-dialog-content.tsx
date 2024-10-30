@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/app/_components/ui/input'
 import { Label } from '@/app/_components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/app/_components/ui/radio-group'
+import UpsertButton from '@/app/_components/upsert-button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleIcon } from 'lucide-react'
 import { flattenValidationErrors } from 'next-safe-action'
@@ -164,10 +165,7 @@ const UpsertProductDialogContent = ({ setDialogIsOpen, defaultValues }: UpsertPr
                 Cancelar
               </Button>
             </DialogClose>
-            <Button type='submit' disabled={form.formState.isSubmitting} className='flex gap-1.5'>
-              {isEdditing ? 'Salvar' : 'Criar'}
-              {form.formState.isSubmitting && <CircleIcon className='mr-2 w-4 h-4 animate-spin' />}
-            </Button>
+            <UpsertButton isEdditing={isEdditing} isSubmitting={form.formState.isSubmitting} />
           </DialogFooter>
         </form>
       </Form>

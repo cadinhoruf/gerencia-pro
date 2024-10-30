@@ -5,6 +5,7 @@
   ],
   "rules": {
     "no-empty-interface": false,
-    "no-var": 0
+    "no-var": 0,
+    "no-unused-vars": "error"
   }
 }

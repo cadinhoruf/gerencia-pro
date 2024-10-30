@@ -63,7 +63,8 @@ export const upsertSale = actionClient
             productId: product.id,
             quantity: product.quantity,
             unitPrice: productFromDb.price,
-            clientId: clientId
+            clientId: clientId,
+            unitCost: productFromDb.cost
           }
         })
         await trx.product.update({
