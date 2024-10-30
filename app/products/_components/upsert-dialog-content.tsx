@@ -25,10 +25,10 @@ import { NumericFormat } from 'react-number-format'
 
 interface UpsertProductDialogContentProps {
   defaultValues?: UpsertProductSchema
-  setDialogOpen: Dispatch<SetStateAction<boolean>>
+  setDialogIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const UpsertProductDialogContent = ({ setDialogOpen, defaultValues }: UpsertProductDialogContentProps) => {
+const UpsertProductDialogContent = ({ setDialogIsOpen, defaultValues }: UpsertProductDialogContentProps) => {
   const [stock, setStock] = useState(false)
   const { execute: executeUpsertProduct } = useAction(upsertProduct, {
     onError: ({ error: { validationErrors, serverError } }) => {
@@ -37,7 +37,7 @@ const UpsertProductDialogContent = ({ setDialogOpen, defaultValues }: UpsertProd
     },
     onSuccess: () => {
       toast.success(`Produto ${isEdditing ? 'editado' : 'criado'}   com sucesso`)
-      setDialogOpen(false)
+      setDialogIsOpen(false)
     }
   })
   const form = useForm<UpsertProductSchema>({

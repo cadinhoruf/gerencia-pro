@@ -2,7 +2,7 @@
 import { Combobox, ComboboxOption } from '@/app/_components/ui/combobox'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Product } from '@prisma/client'
-import { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import UpserSaleTableDropdownMenu from './upsert-table-dropdown-menu'
@@ -37,10 +37,13 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>
 
 interface UpsertSheetContentProps {
+  isOpen: boolean
+  saleId?: string
   products: Product[]
   productOptions: ComboboxOption[]
   clientOptions: ComboboxOption[]
   setSheetIsOpen: Dispatch<SetStateAction<boolean>>
+  defaultSelectedProducts?: SelectedProducts[]
 }
 
 export interface SelectedProducts {
@@ -51,13 +54,24 @@ export interface SelectedProducts {
   quantity: number
 }
 
-const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertSheetContentProps) => {
+const UpsertSheetContent = ({
+  productOptions,
+  products,
+  clientOptions,
+  defaultSelectedProducts,
+  isOpen,
+  setSheetIsOpen
+}: UpsertSheetContentProps) => {
   const [actualProduct, setActualProduct] = useState<string>()
-  const [selectedProducts, setSelectedProducts] = useState<SelectedProducts[]>([])
+  const [selectedProducts, setSelectedProducts] = useState<SelectedProducts[]>(defaultSelectedProducts ?? [])
   const { execute: executeCreateSale } = useAction(createSale, {
     onError: ({ error: { validationErrors, serverError } }) => {
       const flattenedErrors = flattenValidationErrors(validationErrors)
       toast.error(serverError ?? flattenedErrors.formErrors[0])
+    },
+    onSuccess: () => {
+      toast.success('Venda realizada com sucesso.')
+      setSheetIsOpen(false)
     }
   })
   const form = useForm<FormSchema>({
@@ -68,6 +82,17 @@ const UpsertSheetContent = ({ productOptions, products, clientOptions }: UpsertS
       clientId: ''
     }
   })
+
+  useEffect(() => {
+    if (!isOpen) {
+      form.reset()
+      setSelectedProducts([])
+    }
+  }, [form, isOpen])
+  useEffect(() => {
+    setSelectedProducts(defaultSelectedProducts ?? [])
+  }, [defaultSelectedProducts])
+
   const onSubmit = async (data: FormSchema) => {
     const selectedProduct = products.find(product => product.id === data.productId)
     if (!selectedProduct) return
