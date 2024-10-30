@@ -7,23 +7,28 @@ import { Button } from './button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command'
 import { Popover, PopoverContent, PopoverTrigger } from './popover'
 import { cn } from '@/app/_lib/utils'
-import { Dispatch, SetStateAction } from 'react'
 
-export interface ComboboxOption {
+export interface ComboboxProductOption {
   value: string
   label: string
   cost?: number
 }
 
-interface ComboboxProps {
-  options: ComboboxOption[]
+interface ComboboxProductProps {
+  options: ComboboxProductOption[]
   value: string
   onChange: (value: string) => void
   placeholder?: string
-  setActualProduct?: Dispatch<SetStateAction<string | undefined>>
+  // setActualProduct?: Dispatch<SetStateAction<string>>
 }
 
-export const ComboboxValue = ({ value, options, placeholder, onChange, setActualProduct }: ComboboxProps) => {
+export const ComboboxProductValue = ({
+  value,
+  options,
+  placeholder,
+  onChange
+  // setActualProduct
+}: ComboboxProductProps) => {
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -51,7 +56,7 @@ export const ComboboxValue = ({ value, options, placeholder, onChange, setActual
                   onSelect={currentValue => {
                     onChange(currentValue === value ? '' : currentValue)
                     setOpen(false)
-                    setActualProduct?.(option.value)
+                    // setActualProduct?.(option.value)
                   }}
                 >
                   <Check className={cn('mr-2 h-4 w-4', value === option.value ? 'opacity-100' : 'opacity-0')} />

@@ -1,4 +1,5 @@
 import { db } from '@/app/_lib/prisma'
+import { Client } from '@prisma/client'
 
 export type SaleStatusDto = 'UNDER_REVIEW' | 'AWAITING_PURCHASE' | 'AWAITING_PAYMENT' | 'COMPLETED'
 
@@ -8,6 +9,7 @@ interface SaleProductDto {
   unitPrice: number
   unitCost: number
   productName: string
+  clientName: string
 }
 
 export interface SaleDto {
@@ -15,17 +17,18 @@ export interface SaleDto {
   productNames: string
   totalProducts: number
   totalAmount: number
-  clientName: string
   status: SaleStatusDto
   date: Date
   saleProducts: SaleProductDto[]
+  clients: Client[]
+  clientName: string
 }
 
 export const getSales = async (): Promise<SaleDto[]> => {
   const sales = await db.sale.findMany({
     include: {
       saleProducts: {
-        include: { products: { select: { name: true } }, client: { select: { name: true } } }
+        include: { products: { select: { name: true } }, client: true }
       }
     }
   })
@@ -39,7 +42,6 @@ export const getSales = async (): Promise<SaleDto[]> => {
       (acc, saleProduct) => acc + saleProduct.quantity * Number(saleProduct.unitPrice),
       0
     ),
-    clientName: sale.saleProducts.map(saleProduct => saleProduct.client.name)[0],
     status: sale.status,
     saleProducts: sale.saleProducts.map(
       (saleProduct): SaleProductDto => ({
@@ -47,8 +49,11 @@ export const getSales = async (): Promise<SaleDto[]> => {
         productName: saleProduct.products.name,
         quantity: saleProduct.quantity,
         unitPrice: Number(saleProduct.unitPrice),
-        unitCost: Number(saleProduct.unitCost)
+        unitCost: Number(saleProduct.unitCost),
+        clientName: saleProduct.client.name
       })
-    )
+    ),
+    clients: sale.saleProducts.map(saleProduct => saleProduct.client),
+    clientName: sale.saleProducts.map(saleProduct => saleProduct.client.name)[0]
   }))
 }

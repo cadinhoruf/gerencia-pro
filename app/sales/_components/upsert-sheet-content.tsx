@@ -1,30 +1,22 @@
 'use client'
 import { Combobox, ComboboxOption } from '@/app/_components/ui/combobox'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Product } from '@prisma/client'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
 import { useAction } from 'next-safe-action/hooks'
 import { Button } from '@/app/_components/ui/button'
-import { ComboboxValue } from '@/app/_components/ui/combobox-value'
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  FormDescription,
-  Form
-} from '@/app/_components/ui/form'
+import { ComboboxProductOption, ComboboxProductValue } from '@/app/_components/ui/combobox-product'
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from '@/app/_components/ui/form'
 import { SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/app/_components/ui/sheet'
-import { cn } from '@/app/_lib/utils'
 import { PlusIcon, CheckIcon, LoaderCircleIcon } from 'lucide-react'
 import { Input } from '@/app/_components/ui/input'
 import { flattenValidationErrors } from 'next-safe-action'
 import SaleUpsertSheetTable from './upsert-sheet-table'
 import { upsertSale } from '@/app/_actions/sale/upsert-sale'
+import { ProductDto } from '@/app/_data-access/product/get-product'
+import { Client } from '@prisma/client'
 
 const formSchema = z.object({
   productId: z.string().uuid({ message: 'O produto é obrigatório' }),
@@ -45,14 +37,15 @@ export interface SelectedProducts {
 interface UpsertSheetContentProps {
   isOpen: boolean
   saleId?: string
-  products: Product[]
-  productOptions: ComboboxOption[]
+  products: ProductDto[]
+  productOptions: ComboboxProductOption[]
   clientOptions: ComboboxOption[]
   setSheetIsOpen: Dispatch<SetStateAction<boolean>>
   defaultSelectedProducts?: SelectedProducts[]
 }
 
 const UpsertSheetContent = ({
+  saleId,
   productOptions,
   products,
   clientOptions,
@@ -60,9 +53,9 @@ const UpsertSheetContent = ({
   isOpen,
   setSheetIsOpen
 }: UpsertSheetContentProps) => {
-  const [actualProduct, setActualProduct] = useState<string>()
+  const [actualProduct, setActualProduct] = useState<string>('')
   const [selectedProducts, setSelectedProducts] = useState<SelectedProducts[]>(defaultSelectedProducts ?? [])
-  const { execute: executeCreateSale } = useAction(upsertSale, {
+  const { execute: executeUpsertSale } = useAction(upsertSale, {
     onError: ({ error: { validationErrors, serverError } }) => {
       const flattenedErrors = flattenValidationErrors(validationErrors)
       toast.error(serverError ?? flattenedErrors.formErrors[0])
@@ -141,10 +134,11 @@ const UpsertSheetContent = ({
     })
   }
 
-  const productStock = products.find(product => product.id === actualProduct)?.stock
+  const productHaveStock = products.find(product => product.id === actualProduct)?.stock
 
   const onSubmitSale = async () => {
-    executeCreateSale({
+    executeUpsertSale({
+      id: saleId,
       products: selectedProducts.map(product => ({
         id: product.id,
         quantity: product.quantity
@@ -181,11 +175,11 @@ const UpsertSheetContent = ({
               <FormItem>
                 <FormLabel>Produto</FormLabel>
                 <FormControl>
-                  <ComboboxValue
+                  <ComboboxProductValue
                     {...field}
                     placeholder='Selecione um produto'
                     options={productOptions}
-                    setActualProduct={setActualProduct}
+                    // setActualProduct={setActualProduct}
                   />
                 </FormControl>
                 <FormMessage />
@@ -201,9 +195,9 @@ const UpsertSheetContent = ({
                 <FormControl>
                   <Input {...field} type='number' placeholder='Quantidade' className='w-full' min={1} step={1} />
                 </FormControl>
-                {actualProduct && productStock && (
-                  <FormDescription className='text-xs'>Quantidade em estoque: {cn(productStock)}</FormDescription>
-                )}
+                {/* {actualProduct &&  (
+                  <FormDescription className='text-xs'>Quantidade em estoque: {cn(productHaveStock)}</FormDescription>
+                )} */}
                 <FormMessage />
               </FormItem>
             )}

@@ -9,20 +9,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/app/_components/ui/dropdown-menu'
-import { Sale } from '@prisma/client'
-
 import { MoreHorizontalIcon, ClipboardCopyIcon, EditIcon, TrashIcon } from 'lucide-react'
-import DeleteSalesDialogContent from './delete-dialog-content'
+import DeleteSaleDialogContent from './delete-dialog-content'
 import { copyToClipboard } from '@/app/_helpers/copy-to-clipboard'
 import { Sheet, SheetTrigger } from '@/app/_components/ui/sheet'
 import UpsertSheetContent from './upsert-sheet-content'
 import { useState } from 'react'
+import { ComboboxOption } from '@/app/_components/ui/combobox'
+import { SaleDto } from '@/app/_data-access/sale/get-sales'
+import { ProductDto } from '@/app/_data-access/product/get-product'
+import { ComboboxProductOption } from '@/app/_components/ui/combobox-product'
 
-interface SalesTableDropdownMenuProps {
-  sale: Pick<Sale, 'id'>
+interface SaleTableDropdownMenuProps {
+  sale: Pick<SaleDto, 'id' | 'saleProducts'>
+  productOptions: ComboboxProductOption[]
+  products: ProductDto[]
+  clientOptions: ComboboxOption[]
 }
 
-const SalesTableDropdownMenu = ({ sale }: SalesTableDropdownMenuProps) => {
+const SaleTableDropdownMenu = ({ sale, productOptions, products, clientOptions }: SaleTableDropdownMenuProps) => {
   const [upsertSheetIsOpen, setUpsertSheetIsOpen] = useState(false)
   return (
     <Sheet open={upsertSheetIsOpen} onOpenChange={setUpsertSheetIsOpen}>
@@ -54,18 +59,26 @@ const SalesTableDropdownMenu = ({ sale }: SalesTableDropdownMenuProps) => {
             </AlertDialogTrigger>
           </DropdownMenuContent>
         </DropdownMenu>
-        <DeleteSalesDialogContent saleId={sale.id} />
+        <DeleteSaleDialogContent saleId={sale.id} />
       </AlertDialog>
 
       <UpsertSheetContent
+        saleId={sale.id}
         isOpen={upsertSheetIsOpen}
-        clientOptions={[]}
-        productOptions={[]}
-        products={[]}
+        clientOptions={clientOptions}
+        productOptions={productOptions}
+        products={products}
         setSheetIsOpen={setUpsertSheetIsOpen}
+        defaultSelectedProducts={sale.saleProducts.map(saleProduct => ({
+          id: saleProduct.productId,
+          quantity: saleProduct.quantity,
+          name: saleProduct.productName,
+          price: saleProduct.unitPrice,
+          cost: saleProduct.unitCost
+        }))}
       />
     </Sheet>
   )
 }
 
-export default SalesTableDropdownMenu
+export default SaleTableDropdownMenu

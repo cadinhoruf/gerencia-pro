@@ -6,10 +6,11 @@ import CreateSaleButton from './_components/create-sale-button'
 import { DataTable } from '../_components/ui/data-table'
 import { saleTableColums } from './_components/table-colums'
 import { getSales } from '../_data-access/sale/get-sales'
+import { ComboboxProductOption } from '../_components/ui/combobox-product'
 
 const SalesPage = async () => {
   const products = await getProducts()
-  const productOptions: ComboboxOption[] = products.map(product => ({
+  const productOptions: ComboboxProductOption[] = products.map(product => ({
     value: product.id,
     cost: product.cost,
     label: product.name
@@ -21,6 +22,14 @@ const SalesPage = async () => {
   }))
 
   const sales = await getSales()
+
+  const tableData = sales.map(sale => ({
+    ...sale,
+    products,
+    productOptions,
+    clients,
+    clientOptions
+  }))
   return (
     <>
       <Toaster position='top-right' />
@@ -36,7 +45,7 @@ const SalesPage = async () => {
             products={JSON.parse(JSON.stringify(products))}
           />
         </div>
-        <DataTable columns={saleTableColums} data={JSON.parse(JSON.stringify(sales))} />
+        <DataTable columns={saleTableColums} data={tableData} />
       </div>
     </>
   )
