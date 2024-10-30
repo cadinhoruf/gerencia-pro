@@ -1,8 +1,7 @@
 'use client'
-import ClientStatusBadge from '@/app/_components/sale-status-badge'
 import { Client } from '@prisma/client'
 import { ColumnDef } from '@tanstack/react-table'
-// import ProductTableDropdownMenu from './table-dropdown-menu'
+import ClientTableDropdownMenu from './table-dropdown-menu'
 
 export const clientTableColumns: ColumnDef<Client>[] = [
   {
@@ -32,9 +31,8 @@ export const clientTableColumns: ColumnDef<Client>[] = [
   {
     header: 'Ações',
     accessorKey: 'actions',
-    cell: row => {
-      const product = row.row.original
-      // return <ProductTableDropdownMenu product={product} />
+    cell: ({ row: { original: client } }) => {
+      return <ClientTableDropdownMenu client={client} />
     }
   }
 ]

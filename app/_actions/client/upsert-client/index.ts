@@ -12,5 +12,4 @@ export const upsertClient = actionClient.schema(upsertClientSchema).action(async
     create: data
   })
   revalidatePath('/clients', 'page')
-  revalidatePath('/')
 })

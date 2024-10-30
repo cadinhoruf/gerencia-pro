@@ -1,5 +1,5 @@
 import { Toaster } from 'react-hot-toast'
-import UpsertClientButton from './_components/upsert-client-button'
+import UpsertClientButton from './_components/create-client-button'
 import { getClients } from '../_data-access/clients/get-client'
 import { DataTable } from '../_components/ui/data-table'
 import { clientTableColumns } from './_components/table-colums'

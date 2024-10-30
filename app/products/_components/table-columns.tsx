@@ -44,9 +44,6 @@ export const productTableColumns: ColumnDef<ProductDto>[] = [
   {
     accessorKey: 'actions',
     header: 'Ações',
-    cell: row => {
-      const product = row.row.original
-      return <ProductTableDropdownMenu product={product} />
-    }
+    cell: row => <ProductTableDropdownMenu product={row.row.original} />
   }
 ]

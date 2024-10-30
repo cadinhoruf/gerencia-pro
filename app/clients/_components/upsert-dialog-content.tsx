@@ -29,7 +29,7 @@ interface UpsertClientDialogContentProps {
 const UpsertClientDialogContent = ({ setDialogIsOpen, defaultValues }: UpsertClientDialogContentProps) => {
   const { execute: executeUpsertClient } = useAction(upsertClient, {
     onSuccess: () => {
-      toast.success('Cliente criado com sucesso')
+      toast.success(`Cliente ${isEdditing ? 'editado' : 'criado'} com sucesso`)
       setDialogIsOpen(false)
     },
     onError: ({ error: { validationErrors, serverError } }) => {
@@ -37,6 +37,8 @@ const UpsertClientDialogContent = ({ setDialogIsOpen, defaultValues }: UpsertCli
       toast.error(serverError ?? flattenedErrors.formErrors[0])
     }
   })
+
+  const isEdditing = !!defaultValues
 
   const form = useForm<UpsertClientSchema>({
     shouldUnregister: true,
@@ -51,12 +53,14 @@ const UpsertClientDialogContent = ({ setDialogIsOpen, defaultValues }: UpsertCli
     }
   })
 
-  const isEdditing = !!defaultValues
+  const onSubmit = (data: UpsertClientSchema) => {
+    executeUpsertClient({ ...data, id: defaultValues?.id })
+  }
 
   return (
     <DialogContent>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(executeUpsertClient)} className='space-y-8'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           <DialogHeader>
             <DialogTitle>{isEdditing ? 'Editar' : 'Criar'} cliente</DialogTitle>
             <DialogDescription>Insira as informações abaixo</DialogDescription>
@@ -155,7 +159,7 @@ const UpsertClientDialogContent = ({ setDialogIsOpen, defaultValues }: UpsertCli
             </DialogClose>
             <Button type='submit' disabled={form.formState.isSubmitting} className='flex gap-1.5'>
               {isEdditing ? 'Salvar' : 'Criar'}
-              {form.formState.isSubmitting && <CircleIcon className='mr-2 h-4 w-4 animate-spin' />}
+              {form.formState.isSubmitting && <CircleIcon className='mr-2 w-4 h-4 animate-spin' />}
             </Button>
           </DialogFooter>
         </form>

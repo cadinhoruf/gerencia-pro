@@ -5,6 +5,8 @@ import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import UpsertClientDialogContent from './upsert-dialog-content'
 
+interface UpsertClientButtonProps {}
+
 const UpsertClientButton = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
