@@ -1,11 +1,11 @@
 'use client'
-import { SalesDto } from '@/app/_data-access/sale/get-sales'
 import { formatCurrency } from '@/app/_helpers/currency'
 import { ColumnDef } from '@tanstack/react-table'
 import SaleTableDropdownMenu from './table-dropdown-menu'
 import SaleStatusBadge from '@/app/_components/sale-status-badge'
+import { SaleDto } from '@/app/_data-access/sale/get-sales'
 
-export const saleTableColums: ColumnDef<SalesDto>[] = [
+export const saleTableColums: ColumnDef<SaleDto>[] = [
   {
     accessorKey: 'productNames',
     header: 'Produtos'
