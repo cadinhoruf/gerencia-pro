@@ -18,9 +18,17 @@ model Product {
   saleProducts SaleProduct[]
 }
 
+enum SaleStatus {
+  UNDER_REVIEW
+  AWAITING_PURCHASE
+  AWAITING_PAYMENT
+  COMPLETED
+}
+
 model Sale {
   id           String        @id @default(uuid())
   date         DateTime
+  status       SaleStatus
   createdAt    DateTime      @default(now())
   updateAt     DateTime      @updatedAt
   saleProducts SaleProduct[]

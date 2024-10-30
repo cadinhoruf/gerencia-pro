@@ -33,7 +33,8 @@ export const upsertSale = actionClient
       }
       const sale = await trx.sale.create({
         data: {
-          date: new Date()
+          date: new Date(),
+          status: 'UNDER_REVIEW'
         }
       })
       for (const product of products) {
@@ -48,11 +49,13 @@ export const upsertSale = actionClient
           })
         }
         const productHaveStock = productFromDb.stock !== null ? productFromDb.stock : 0
-        const productIsOutOfStock = product.quantity > productHaveStock
-        if (productIsOutOfStock) {
-          returnValidationErrors(upsertSaleSchema, {
-            _errors: ['Produto fora de estoque.']
-          })
+        if (productHaveStock) {
+          const productIsOutOfStock = product.quantity > productHaveStock
+          if (productIsOutOfStock) {
+            returnValidationErrors(upsertSaleSchema, {
+              _errors: ['Produto fora de estoque.']
+            })
+          }
         }
         await trx.saleProduct.create({
           data: {
