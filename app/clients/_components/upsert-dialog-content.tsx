@@ -14,16 +14,30 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/app/_components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleIcon } from 'lucide-react'
+import { flattenValidationErrors } from 'next-safe-action'
+import { useAction } from 'next-safe-action/hooks'
+import { Dispatch, SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { withMask } from 'use-mask-input'
 
 interface UpsertClientDialogContentProps {
-  onSuccess?: () => void
+  setDialogIsOpen: Dispatch<SetStateAction<boolean>>
   defaultValues?: UpsertClientSchema
 }
 
-const UpsertClientDialogContent = ({ onSuccess, defaultValues }: UpsertClientDialogContentProps) => {
+const UpsertClientDialogContent = ({ setDialogIsOpen, defaultValues }: UpsertClientDialogContentProps) => {
+  const { execute: executeUpsertClient } = useAction(upsertClient, {
+    onSuccess: () => {
+      toast.success('Cliente criado com sucesso')
+      setDialogIsOpen(false)
+    },
+    onError: ({ error: { validationErrors, serverError } }) => {
+      const flattenedErrors = flattenValidationErrors(validationErrors)
+      toast.error(serverError ?? flattenedErrors.formErrors[0])
+    }
+  })
+
   const form = useForm<UpsertClientSchema>({
     shouldUnregister: true,
     resolver: zodResolver(upsertClientSchema),
@@ -31,26 +45,18 @@ const UpsertClientDialogContent = ({ onSuccess, defaultValues }: UpsertClientDia
       name: '',
       contactName: '',
       contactNumber: '',
+      cpf: '',
+      cnpj: '',
       address: ''
     }
   })
 
   const isEdditing = !!defaultValues
 
-  const onSubmit = async (data: UpsertClientSchema) => {
-    try {
-      await upsertClient({ ...data, id: defaultValues?.id })
-      onSuccess?.()
-      toast.success(`Cliente ${isEdditing ? 'editado' : 'criado'}  com sucesso!`)
-    } catch (error) {
-      console.error(error)
-      toast.error('Erro ao criar cliente')
-    }
-  }
   return (
     <DialogContent>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+        <form onSubmit={form.handleSubmit(executeUpsertClient)} className='space-y-8'>
           <DialogHeader>
             <DialogTitle>{isEdditing ? 'Editar' : 'Criar'} cliente</DialogTitle>
             <DialogDescription>Insira as informações abaixo</DialogDescription>

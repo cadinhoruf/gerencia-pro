@@ -31,13 +31,13 @@ interface UpsertProductDialogContentProps {
 const UpsertProductDialogContent = ({ setDialogIsOpen, defaultValues }: UpsertProductDialogContentProps) => {
   const [stock, setStock] = useState(false)
   const { execute: executeUpsertProduct } = useAction(upsertProduct, {
-    onError: ({ error: { validationErrors, serverError } }) => {
-      const flattenedErrors = flattenValidationErrors(validationErrors)
-      toast.error(serverError ?? flattenedErrors.formErrors[0])
-    },
     onSuccess: () => {
       toast.success(`Produto ${isEdditing ? 'editado' : 'criado'}   com sucesso`)
       setDialogIsOpen(false)
+    },
+    onError: ({ error: { validationErrors, serverError } }) => {
+      const flattenedErrors = flattenValidationErrors(validationErrors)
+      toast.error(serverError ?? flattenedErrors.formErrors[0])
     }
   })
   const form = useForm<UpsertProductSchema>({

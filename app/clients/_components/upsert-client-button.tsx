@@ -5,7 +5,7 @@ import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import UpsertClientDialogContent from './upsert-dialog-content'
 
-const AddClientButton = () => {
+const UpsertClientButton = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false)
 
   return (
@@ -16,9 +16,9 @@ const AddClientButton = () => {
           Novo cliente
         </Button>
       </DialogTrigger>
-      <UpsertClientDialogContent onSuccess={() => setDialogIsOpen(false)} />
+      <UpsertClientDialogContent setDialogIsOpen={setDialogIsOpen} />
     </Dialog>
   )
 }
 
-export default AddClientButton
+export default UpsertClientButton
