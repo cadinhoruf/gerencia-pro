@@ -8,14 +8,22 @@ datasource db {
 }
 
 model Product {
-  id           String        @id @default(uuid())
-  name         String
-  price        Decimal       @db.Decimal(10, 2)
-  stock        Int?
-  cost         Int
-  createdAt    DateTime      @default(now())
-  updateAt     DateTime      @updatedAt
-  saleProducts SaleProduct[]
+  id              String        @id @default(uuid())
+  name            String
+  price           Decimal       @db.Decimal(10, 2)
+  stock           Int?
+  cost            Int
+  createdAt       DateTime      @default(now())
+  updateAt        DateTime      @updatedAt
+  createdByUserId String?
+  updatedByUserId String?
+  createdBy       User?         @relation("ProductCreatedBy", fields: [createdByUserId], references: [id])
+  updatedBy       User?         @relation("ProductUpdatedBy", fields: [updatedByUserId], references: [id])
+  saleProducts    SaleProduct[]
+  Tenant          Tenant?       @relation(fields: [tenantId], references: [id])
+  tenantId        String?
+  User            User?         @relation(fields: [userId], references: [id])
+  userId          String?
 }
 
 enum SaleStatus {
@@ -26,27 +34,37 @@ enum SaleStatus {
 }
 
 model Sale {
-  id           String        @id @default(uuid())
-  date         DateTime
-  status       SaleStatus
-  createdAt    DateTime      @default(now())
-  updateAt     DateTime      @updatedAt
-  saleProducts SaleProduct[]
+  id              String        @id @default(uuid())
+  date            DateTime
+  status          SaleStatus
+  createdAt       DateTime      @default(now())
+  updateAt        DateTime      @updatedAt
+  createdByUserId String?
+  updatedByUserId String?
+  createdBy       User?         @relation("SaleCreatedBy", fields: [createdByUserId], references: [id])
+  updatedBy       User?         @relation("SaleUpdatedBy", fields: [updatedByUserId], references: [id])
+  saleProducts    SaleProduct[]
+  userId          String?
 }
 
 model SaleProduct {
-  id        String   @id @default(uuid())
-  saleId    String
-  productId String
-  clientId  String
-  unitPrice Decimal  @db.Decimal(10, 2)
-  unitCost  Decimal  @db.Decimal(10, 2)
-  quantity  Int
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
-  products  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  sale      Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
-  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  id              String   @id @default(uuid())
+  saleId          String
+  productId       String
+  clientId        String
+  unitPrice       Decimal  @db.Decimal(10, 2)
+  unitCost        Decimal  @db.Decimal(10, 2)
+  quantity        Int
+  createdAt       DateTime @default(now())
+  updateAt        DateTime @updatedAt
+  createdByUserId String?
+  updatedByUserId String?
+  createdBy       User?    @relation("SaleProductCreatedBy", fields: [createdByUserId], references: [id])
+  updatedBy       User?    @relation("SaleProductUpdatedBy", fields: [updatedByUserId], references: [id])
+  products        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sale            Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  client          Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  userId          String?
 }
 
 model Client {
@@ -55,9 +73,56 @@ model Client {
   contactName   String
   contactNumber String
   createdAt     DateTime      @default(now())
-  updateAt      DateTime      @updatedAt
+  updatedAt     DateTime      @updatedAt
   cnpj          String?
   cpf           String?
   address       String
-  SaleProduct   SaleProduct[]
+  createdById   String?
+  updatedById   String?
+  createdBy     User?         @relation("ClientCreatedBy", fields: [createdById], references: [id])
+  updatedBy     User?         @relation("ClientUpdatedBy", fields: [updatedById], references: [id])
+  saleProducts  SaleProduct[]
+}
+
+model Tenant {
+  id        String      @id @default(uuid())
+  name      String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  users     User[]
+  products  Product[]
+  AccessLog AccessLog[]
+}
+
+model User {
+  id                  String        @id @default(uuid())
+  email               String        @unique
+  password            String
+  name                String?
+  tenantId            String
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  tenant              Tenant        @relation(fields: [tenantId], references: [id])
+  accessLogs          AccessLog[]
+  productsCreated     Product[]     @relation("ProductCreatedBy")
+  productsUpdated     Product[]     @relation("ProductUpdatedBy")
+  saleCreated         Sale[]        @relation("SaleCreatedBy")
+  saleUpdated         Sale[]        @relation("SaleUpdatedBy")
+  saleProductsCreated SaleProduct[] @relation("SaleProductCreatedBy")
+  saleProductsUpdated SaleProduct[] @relation("SaleProductUpdatedBy")
+
+  clientsCreated Client[]  @relation("ClientCreatedBy")
+  clientsUpdated Client[]  @relation("ClientUpdatedBy")
+  Product        Product[]
+}
+
+model AccessLog {
+  id        String   @id @default(uuid())
+  userId    String
+  tenantId  String
+  timestamp DateTime @default(now())
+  ipAddress String?
+  userAgent String?
+  user      User     @relation(fields: [userId], references: [id])
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
 }
