@@ -7,8 +7,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '../../_components/ui/alert-dialog'
-import toast from 'react-hot-toast'
+} from '../../../_components/ui/alert-dialog'
+import { toast } from 'sonner'
 import { useAction } from 'next-safe-action/hooks'
 
 type DeleteProductDialogContentProps = {

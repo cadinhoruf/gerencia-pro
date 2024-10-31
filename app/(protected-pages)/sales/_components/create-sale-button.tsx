@@ -7,9 +7,10 @@ import UpsertSheetContent from './upsert-sheet-content'
 import { useState } from 'react'
 import { PlusIcon } from 'lucide-react'
 import { ComboboxProductOption } from '@/app/_components/ui/combobox-product'
+import { ProductDto } from '@/app/_data-access/product/get-product'
 
 interface CreateSaleButtonProps {
-  products: Product[]
+  products: ProductDto[]
   productOptions: ComboboxProductOption[]
   clientOptions: ComboboxOption[]
 }

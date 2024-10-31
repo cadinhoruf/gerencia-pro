@@ -3,12 +3,12 @@ import SidebarButton from './sidebar-button'
 
 const Sidebar = () => {
   return (
-    <div className='flex flex-col bg-white w-64 h-screen'>
-      <div className='flex justify-center items-center p-4'>
-        <h1 className='font-bold text-2xl'>GerenciaPro</h1>
+    <div className='flex h-screen w-64 flex-col bg-white'>
+      <div className='flex items-center justify-center p-4'>
+        <h1 className='text-2xl font-bold'>GerenciaPro</h1>
       </div>
       <div className='flex flex-col gap-2 p-2'>
-        <SidebarButton href='/'>
+        <SidebarButton href='/dashboard'>
           <LayoutGrid size={20} /> Dashboard
         </SidebarButton>
         <SidebarButton href='/products'>

@@ -14,12 +14,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/app/_components/ui/input'
 import UpsertButton from '@/app/_components/upsert-button'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleIcon } from 'lucide-react'
 import { flattenValidationErrors } from 'next-safe-action'
 import { useAction } from 'next-safe-action/hooks'
 import { Dispatch, SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { withMask } from 'use-mask-input'
 
 interface UpsertClientDialogContentProps {

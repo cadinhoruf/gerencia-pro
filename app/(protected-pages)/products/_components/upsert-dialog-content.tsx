@@ -16,12 +16,11 @@ import { Label } from '@/app/_components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/app/_components/ui/radio-group'
 import UpsertButton from '@/app/_components/upsert-button'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleIcon } from 'lucide-react'
 import { flattenValidationErrors } from 'next-safe-action'
 import { useAction } from 'next-safe-action/hooks'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { NumericFormat } from 'react-number-format'
 
 interface UpsertProductDialogContentProps {

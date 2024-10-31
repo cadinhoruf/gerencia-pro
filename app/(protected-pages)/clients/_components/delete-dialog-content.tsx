@@ -1,15 +1,15 @@
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '../../_components/ui/alert-dialog'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { useAction } from 'next-safe-action/hooks'
 import { deleteClient } from '@/app/_actions/client/delete-client'
+import {
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction
+} from '@/app/_components/ui/alert-dialog'
 
 type DeleteClientDialogContentProps = {
   clientId: string

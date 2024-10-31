@@ -1,13 +1,12 @@
-import { Toaster } from 'react-hot-toast'
-import { getProducts } from '../_data-access/product/get-product'
-import { ComboboxOption } from '../_components/ui/combobox'
-import { getClients } from '../_data-access/clients/get-client'
+import { getProducts } from '../../_data-access/product/get-product'
+import { ComboboxOption } from '../../_components/ui/combobox'
+import { getClients } from '../../_data-access/clients/get-client'
 import CreateSaleButton from './_components/create-sale-button'
-import { DataTable } from '../_components/ui/data-table'
+import { DataTable } from '../../_components/ui/data-table'
 import { saleTableColums } from './_components/table-colums'
-import { getSales } from '../_data-access/sale/get-sales'
-import { ComboboxProductOption } from '../_components/ui/combobox-product'
-import { Header, HeaderLeft, HeaderRight, HeaderSubtitle, HeaderTitle } from '../_components/header'
+import { getSales } from '../../_data-access/sale/get-sales'
+import { ComboboxProductOption } from '../../_components/ui/combobox-product'
+import { Header, HeaderLeft, HeaderRight, HeaderSubtitle, HeaderTitle } from '../../_components/header'
 
 const SalesPage = async () => {
   const products = await getProducts()
@@ -33,7 +32,6 @@ const SalesPage = async () => {
   }))
   return (
     <>
-      <Toaster position='top-right' />
       <div className='custom-container'>
         <Header>
           <HeaderLeft>

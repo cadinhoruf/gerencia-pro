@@ -1,15 +1,13 @@
-import { Toaster } from 'react-hot-toast'
 import UpsertClientButton from './_components/create-client-button'
-import { getClients } from '../_data-access/clients/get-client'
-import { DataTable } from '../_components/ui/data-table'
 import { clientTableColumns } from './_components/table-colums'
-import { Header, HeaderLeft, HeaderRight, HeaderSubtitle, HeaderTitle } from '../_components/header'
+import { Header, HeaderLeft, HeaderSubtitle, HeaderTitle, HeaderRight } from '@/app/_components/header'
+import { DataTable } from '@/app/_components/ui/data-table'
+import { getClients } from '@/app/_data-access/clients/get-client'
 
 const ClientsPage = async () => {
   const clients = await getClients()
   return (
     <>
-      <Toaster position='top-right' />
       <div className='custom-container'>
         <Header>
           <HeaderLeft>

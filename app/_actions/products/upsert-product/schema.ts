@@ -5,7 +5,8 @@ export const upsertProductSchema = z.object({
   name: z.string().trim().min(1, { message: 'O nome é obrigatório' }),
   price: z.number().min(0.01, { message: 'O valor é obrigatório' }),
   stock: z.coerce.number().nullish(),
-  cost: z.coerce.number()
+  cost: z.coerce.number(),
+  userId: z.string().uuid()
 })
 
 export type UpsertProductSchema = z.infer<typeof upsertProductSchema>
