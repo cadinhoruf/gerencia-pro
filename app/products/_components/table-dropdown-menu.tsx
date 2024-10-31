@@ -33,18 +33,18 @@ const ProductTableDropdownMenu = ({ product }: ProductTableDropdownMenuProps) =>
           <DropdownMenuContent>
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='gap-1.5' onClick={() => navigator.clipboard.writeText(product.id)}>
+            <DropdownMenuItem className='w-full' onClick={() => navigator.clipboard.writeText(product.id)}>
               <ClipboardCopyIcon size={16} />
               Copiar ID
             </DropdownMenuItem>
             <DialogTrigger asChild>
-              <DropdownMenuItem className='gap-1.5'>
+              <DropdownMenuItem className='w-full'> 
                 <EditIcon size={16} />
                 Editar
               </DropdownMenuItem>
             </DialogTrigger>
             <AlertDialogTrigger asChild>
-              <DropdownMenuItem className='gap-1.5'>
+              <DropdownMenuItem className='w-full'> 
                 <TrashIcon size={16} />
                 Deletar
               </DropdownMenuItem>

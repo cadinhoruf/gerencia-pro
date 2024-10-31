@@ -1,12 +1,11 @@
-import Image from 'next/image'
 import { HandshakeIcon, LayoutGrid, Package, ShoppingBasket } from 'lucide-react'
 import SidebarButton from './sidebar-button'
 
 const Sidebar = () => {
   return (
-    <div className='flex h-screen w-64 flex-col bg-white'>
-      <div className='flex items-center justify-center p-4'>
-        <Image width={100} height={100} src='/logo.png' alt='ABDUZ' priority className='h-auto w-auto' />
+    <div className='flex flex-col bg-white w-64 h-screen'>
+      <div className='flex justify-center items-center p-4'>
+        <h1 className='font-bold text-2xl'>GerenciaPro</h1>
       </div>
       <div className='flex flex-col gap-2 p-2'>
         <SidebarButton href='/'>

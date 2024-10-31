@@ -7,6 +7,7 @@ import { DataTable } from '../_components/ui/data-table'
 import { saleTableColums } from './_components/table-colums'
 import { getSales } from '../_data-access/sale/get-sales'
 import { ComboboxProductOption } from '../_components/ui/combobox-product'
+import { Header, HeaderLeft, HeaderRight, HeaderSubtitle, HeaderTitle } from '../_components/header'
 
 const SalesPage = async () => {
   const products = await getProducts()
@@ -33,18 +34,16 @@ const SalesPage = async () => {
   return (
     <>
       <Toaster position='top-right' />
-      <div className='m-8 w-full space-y-8 overflow-auto rounded-lg bg-white p-8'>
-        <div className='flex w-full items-center justify-between'>
-          <div className='space-y-1'>
-            <span className='text-xs font-semibold text-slate-500'>Gestão de Vendas</span>
-            <h2 className='text-xl font-semibold'>Vendas</h2>
-          </div>
-          <CreateSaleButton
-            clientOptions={clientOptions}
-            productOptions={productOptions}
-            products={JSON.parse(JSON.stringify(products))}
-          />
-        </div>
+      <div className='custom-container'>
+        <Header>
+          <HeaderLeft>
+            <HeaderSubtitle>Gestão de vendas</HeaderSubtitle>
+            <HeaderTitle>Vendas</HeaderTitle>
+          </HeaderLeft>
+          <HeaderRight>
+            <CreateSaleButton clientOptions={clientOptions} productOptions={productOptions} products={products} />
+          </HeaderRight>
+        </Header>
         <DataTable columns={saleTableColums} data={tableData} />
       </div>
     </>

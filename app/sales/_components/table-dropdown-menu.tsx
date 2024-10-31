@@ -41,18 +41,18 @@ const SaleTableDropdownMenu = ({ sale, productOptions, products, clientOptions }
           <DropdownMenuContent>
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem className='w-full'>
               <ClipboardCopyIcon size={16} onClick={() => copyToClipboard(sale.id)} />
               Copiar ID
             </DropdownMenuItem>
             <SheetTrigger asChild>
-              <DropdownMenuItem>
+              <DropdownMenuItem className='w-full'>
                 <EditIcon size={16} />
                 Editar
               </DropdownMenuItem>
             </SheetTrigger>
             <AlertDialogTrigger>
-              <DropdownMenuItem>
+              <DropdownMenuItem className='w-full'>
                 <TrashIcon size={16} />
                 Deletar
               </DropdownMenuItem>

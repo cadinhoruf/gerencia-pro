@@ -26,7 +26,7 @@ const UpsertSaleTableDropdownMenu = ({ product, onDelete }: ProductTableDropdown
       <DropdownMenuContent className='flex cursor-pointer flex-col gap-1.5 space-y-1 bg-white p-2 shadow-md'>
         <DropdownMenuLabel>Ações</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className='flex gap-1.5'>
+        <DropdownMenuItem className='w-full'>
           <ClipboardCopyIcon
             size={16}
             onClick={() => {
@@ -36,7 +36,7 @@ const UpsertSaleTableDropdownMenu = ({ product, onDelete }: ProductTableDropdown
           Copiar ID
         </DropdownMenuItem>
 
-        <DropdownMenuItem className='flex gap-1.5' onClick={() => onDelete(product.id)}>
+        <DropdownMenuItem className='w-full' onClick={() => onDelete(product.id)}>
           <TrashIcon size={16} />
           Deletar
         </DropdownMenuItem>
