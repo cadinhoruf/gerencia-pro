@@ -8,8 +8,8 @@ export const upsertClient = actionClient.schema(upsertClientSchema).action(async
   upsertClientSchema.parse(data)
   await db.client.upsert({
     where: { id: id ?? '' },
-    update: data,
-    create: data
+    update: { ...data },
+    create: { ...data, createdById: data.createdByUserId }
   })
   revalidatePath('/clients', 'page')
 })

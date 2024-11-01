@@ -38,13 +38,13 @@ const ProductTableDropdownMenu = ({ product }: ProductTableDropdownMenuProps) =>
               Copiar ID
             </DropdownMenuItem>
             <DialogTrigger asChild>
-              <DropdownMenuItem className='w-full'> 
+              <DropdownMenuItem className='w-full'>
                 <EditIcon size={16} />
                 Editar
               </DropdownMenuItem>
             </DialogTrigger>
             <AlertDialogTrigger asChild>
-              <DropdownMenuItem className='w-full'> 
+              <DropdownMenuItem className='w-full'>
                 <TrashIcon size={16} />
                 Deletar
               </DropdownMenuItem>
@@ -57,7 +57,9 @@ const ProductTableDropdownMenu = ({ product }: ProductTableDropdownMenuProps) =>
             name: product.name,
             price: Number(product.price),
             stock: product.stock,
-            cost: Number(product.cost)
+            cost: Number(product.cost),
+            createdByUserId: product.createdByUserId,
+            updatedByUserId: product.updatedByUserId
           }}
           setDialogIsOpen={setEditDialogIsOpen}
         />
