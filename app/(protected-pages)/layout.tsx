@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description: 'Seu gerenciador de estoque e  vendas online'
 }
 
-export default function ProtectedLayout({
+export default async function ProtectedLayout({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en'>
+    <html lang='pt-BR'>
       <body className={`${inter.className} antialiased`}>
         <div className='flex h-full'>
           <Toaster />

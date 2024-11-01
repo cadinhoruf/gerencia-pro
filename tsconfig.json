@@ -25,14 +25,14 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/pages/api/auth/1"
+    "app/api/auth/1"
   ],
   "exclude": [
     "node_modules"

@@ -2,7 +2,7 @@ import { LockIcon } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../_components/ui/card'
 import { LoginForm } from './_components/form'
 
-export default function LoginPage() {
+export default async function LoginPage() {
   return (
     <div className='flex min-h-screen w-screen items-center justify-center bg-gray-100'>
       <Card className='w-full max-w-md'>
@@ -13,7 +13,7 @@ export default function LoginPage() {
             </div>
           </div>
           <CardTitle className='text-center text-2xl'>GerenciaPro</CardTitle>
-          <CardDescription className='text-center'>Enter your credentials to access your account</CardDescription>
+          <CardDescription className='text-center'> com suas credenciais para acessar sua conta</CardDescription>
         </CardHeader>
         <CardContent>
           <LoginForm />
